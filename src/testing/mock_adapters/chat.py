@@ -41,7 +41,10 @@ class MockChatModel(BaseChatModel):
             model_name: Model identifier
             **kwargs: Additional arguments passed to BaseChatModel
         """
-        # Set fixture_path before calling super().__init__
+        # Call parent __init__ first (BaseChatModel expects no custom kwargs)
+        super().__init__(**kwargs)
+
+        # Set instance attributes after parent initialization
         if fixture_path is None:
             # Default to tests/fixtures/mock_adapters/chat.yaml
             fixture_path = os.path.join(
@@ -52,10 +55,8 @@ class MockChatModel(BaseChatModel):
                 "chat.yaml",
             )
 
-        # Call parent __init__ with all fields
-        super().__init__(fixture_path=fixture_path, fixtures={}, model_name=model_name, **kwargs)
-
-        # Load fixtures after initialization
+        self.fixture_path = fixture_path
+        self.model_name = model_name
         self.fixtures = self._load_fixtures()
 
     def _load_fixtures(self) -> Dict[str, str]:
@@ -132,7 +133,17 @@ class MockChatModel(BaseChatModel):
 
         # Simple concatenation for now
         # Real adapters would format this properly (system/user/assistant roles)
-        return " ".join([msg.content for msg in messages if hasattr(msg, "content")])
+        parts: List[str] = []
+        for msg in messages:
+            if hasattr(msg, "content"):
+                # content can be str or list, convert to str
+                content = msg.content
+                if isinstance(content, str):
+                    parts.append(content)
+                elif isinstance(content, list):
+                    # For multimodal content, just join text parts
+                    parts.append(str(content))
+        return " ".join(parts)
 
     def _generate(
         self,

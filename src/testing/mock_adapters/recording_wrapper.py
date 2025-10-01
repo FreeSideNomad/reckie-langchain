@@ -18,8 +18,6 @@ Usage:
     # → Makes real API call AND saves response to embeddings.yaml
 """
 
-# type: ignore
-
 import hashlib
 import os
 from datetime import datetime
@@ -51,7 +49,7 @@ class RecordingEmbeddings(Embeddings):
         self,
         wrapped_embeddings: Embeddings,
         fixture_path: Optional[str] = None,
-        enabled: bool = None,
+        enabled: Optional[bool] = None,
     ):
         """Initialize recording wrapper.
 
@@ -93,7 +91,9 @@ class RecordingEmbeddings(Embeddings):
 
         return data
 
-    def _save_fixture(self, text: str, vector: List[float], metadata: Dict[str, Any] = None):
+    def _save_fixture(
+        self, text: str, vector: List[float], metadata: Optional[Dict[str, Any]] = None
+    ) -> None:
         """Save a new fixture to the YAML file.
 
         Args:
@@ -209,7 +209,7 @@ class RecordingChatModel(BaseChatModel):
         self,
         wrapped_chat: BaseChatModel,
         fixture_path: Optional[str] = None,
-        enabled: bool = None,
+        enabled: Optional[bool] = None,
         **kwargs: Any,
     ):
         """Initialize recording wrapper.
@@ -220,23 +220,22 @@ class RecordingChatModel(BaseChatModel):
             enabled: Whether recording is enabled. If None, checks RECORD_FIXTURES env var.
             **kwargs: Additional arguments
         """
+        # Initialize parent first (BaseChatModel doesn't accept custom kwargs)
+        super().__init__(**kwargs)
+
+        # Set instance attributes after parent initialization
+        self.wrapped_chat = wrapped_chat
+
         # Determine if recording is enabled
         if enabled is None:
             enabled = os.getenv("RECORD_FIXTURES", "false").lower() == "true"
+        self.enabled = enabled
 
         # Determine fixture path
         if fixture_path is None:
             fixture_dir = os.getenv("RECORD_FIXTURES_PATH", "tests/fixtures/mock_adapters")
             fixture_path = os.path.join(fixture_dir, "chat.yaml")
-
-        # Initialize parent
-        super().__init__(
-            wrapped_chat=wrapped_chat,
-            fixture_path=fixture_path,
-            enabled=enabled,
-            fixtures={},
-            **kwargs,
-        )
+        self.fixture_path = fixture_path
 
         # Load existing fixtures
         self.fixtures = self._load_existing_fixtures()
@@ -254,7 +253,9 @@ class RecordingChatModel(BaseChatModel):
 
         return data
 
-    def _save_fixture(self, prompt: str, response: str, metadata: Dict[str, Any] = None):
+    def _save_fixture(
+        self, prompt: str, response: str, metadata: Optional[Dict[str, Any]] = None
+    ) -> None:
         """Save a new fixture to the YAML file."""
         if not self.enabled:
             return
@@ -293,7 +294,17 @@ class RecordingChatModel(BaseChatModel):
 
     def _messages_to_prompt(self, messages: List[BaseMessage]) -> str:
         """Convert messages to prompt string."""
-        return " ".join([msg.content for msg in messages if hasattr(msg, "content")])
+        parts: List[str] = []
+        for msg in messages:
+            if hasattr(msg, "content"):
+                # content can be str or list, convert to str
+                content = msg.content
+                if isinstance(content, str):
+                    parts.append(content)
+                elif isinstance(content, list):
+                    # For multimodal content, just convert to string
+                    parts.append(str(content))
+        return " ".join(parts)
 
     def _generate(
         self,
@@ -308,7 +319,12 @@ class RecordingChatModel(BaseChatModel):
 
         # Record response
         prompt = self._messages_to_prompt(messages)
-        response = result.generations[0].message.content if result.generations else ""
+        if result.generations:
+            content = result.generations[0].message.content
+            # Convert content to string (can be str or list)
+            response = content if isinstance(content, str) else str(content)
+        else:
+            response = ""
         self._save_fixture(prompt, response)
 
         return result

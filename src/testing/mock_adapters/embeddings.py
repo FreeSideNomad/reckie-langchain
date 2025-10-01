@@ -3,7 +3,7 @@
 import hashlib
 import os
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import yaml
 from langchain_core.embeddings import Embeddings
@@ -24,7 +24,7 @@ class MockEmbeddings(Embeddings):
         >>> vectors = embeddings.embed_documents(["text1", "text2"])
     """
 
-    def __init__(self, fixture_path: str = None, embedding_dimension: int = 1536):
+    def __init__(self, fixture_path: Optional[str] = None, embedding_dimension: int = 1536):
         """Initialize mock embeddings adapter.
 
         Args:
