@@ -69,7 +69,7 @@ def test_db(postgres_container):
     """
     Create database session for each test.
 
-    Provides a clean database session with automatic rollback
+    Provides a clean database session with automatic cleanup
     after each test to ensure test isolation.
 
     Args:
@@ -85,7 +85,28 @@ def test_db(postgres_container):
     try:
         yield db
     finally:
-        db.rollback()  # Rollback changes after test
+        # Clean up all data after test for isolation
+        db.rollback()
+
+        # Truncate all tables to ensure clean state for next test
+        with engine.connect() as conn:
+            # Disable foreign key checks temporarily
+            conn.execute(text("SET session_replication_role = 'replica'"))
+
+            # Get all table names
+            tables_result = conn.execute(
+                text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
+            )
+            tables = [row[0] for row in tables_result]
+
+            # Truncate all tables
+            for table in tables:
+                conn.execute(text(f"TRUNCATE TABLE {table} CASCADE"))
+
+            # Re-enable foreign key checks
+            conn.execute(text("SET session_replication_role = 'origin'"))
+            conn.commit()
+
         db.close()
 
 
