@@ -33,6 +33,7 @@ if TYPE_CHECKING:
     from src.database.models.document_relationship import DocumentRelationship
     from src.database.models.conversation import Conversation
     from src.database.models.document_version import DocumentVersion
+    from src.database.models.document_embedding import DocumentEmbedding
 
 
 class Document(Base, TimestampMixin):
@@ -182,8 +183,11 @@ class Document(Base, TimestampMixin):
         cascade="all, delete-orphan"
     )
 
-    # Note: embeddings will be added when we create the DocumentEmbedding model
-    # embeddings: Mapped[List["DocumentEmbedding"]] = relationship(...)
+    embeddings: Mapped[List["DocumentEmbedding"]] = relationship(
+        "DocumentEmbedding",
+        back_populates="document",
+        cascade="all, delete-orphan"
+    )
 
     # Validators
     @validates("status")
