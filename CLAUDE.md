@@ -650,3 +650,139 @@ echo "✅ All checks passed!"
 
 **Last Updated:** 2025-10-01
 **Maintained By:** Claude Code (LLM Agent)
+
+---
+
+# Local CI/CD Validation Setup
+
+## Overview
+
+This section describes local validation tools that replicate GitHub Actions CI/CD checks. Running these tools before committing ensures code passes remote checks, saving time and preventing failed builds.
+
+## Problem Statement
+
+GitHub Actions CI/CD pipeline was failing on feature branches due to:
+1. **Test Collection Errors**: Obsolete test files trying to import deleted modules
+2. **Type Checking Failures**: Missing type annotations
+3. **Formatting Issues**: Inconsistent code formatting (black, isort)
+4. **Coverage Requirements**: Code coverage below 85% threshold
+
+**Impact**: Every push triggered a failed build, slowing development velocity.
+
+## Solution: Local Validation Tools
+
+Two complementary tools mirror the GitHub Actions pipeline:
+
+### 1. Pre-Commit Hook (`.git/hooks/pre-commit`)
+
+**Purpose**: Automatically validate code quality before every commit
+
+**What it does**:
+- ✅ Runs black (code formatter check)
+- ✅ Runs isort (import sorting check)
+- ✅ Runs flake8 (style guide enforcement)
+- ✅ Runs mypy (static type checking)
+
+**When it runs**: Automatically on `git commit`
+
+**How to skip** (not recommended): `git commit --no-verify`
+
+### 2. Full CI Check Script (`scripts/run-ci-checks.sh`)
+
+**Purpose**: Run complete CI/CD pipeline locally before pushing
+
+**What it does**:
+- ✅ **Phase 1 - Linting**: black, isort, flake8
+- ✅ **Phase 2 - Type Checking**: mypy
+- ✅ **Phase 3 - Tests & Coverage**: pytest with 85% coverage requirement
+- ✅ **Phase 4 - Security**: bandit, safety
+
+**How to run**:
+```bash
+./scripts/run-ci-checks.sh
+```
+
+## GitHub Actions Pipeline Mapping
+
+Local tools replicate exact checks from `.github/workflows/ci.yml`:
+
+| GitHub Job | Local Tool | Coverage |
+|------------|------------|----------|
+| `lint` | Pre-commit hook + run-ci-checks.sh | black, isort, flake8 |
+| `type-check` | Pre-commit hook + run-ci-checks.sh | mypy |
+| `test` | run-ci-checks.sh | pytest with 85% coverage |
+| `security` | run-ci-checks.sh | bandit, safety |
+
+## Daily Workflow
+
+### Before Committing
+Pre-commit hook runs automatically. If it fails:
+
+```bash
+# Fix formatting
+black src/ tests/
+isort src/ tests/
+
+# Fix type errors
+mypy src/ --install-types --non-interactive
+
+# Then commit again
+git commit -m "Your message"
+```
+
+### Before Pushing
+Run the full CI pipeline locally:
+
+```bash
+./scripts/run-ci-checks.sh
+```
+
+If it passes, your code will pass GitHub Actions ✅
+
+### Quick Fixes
+
+```bash
+# Auto-fix formatting
+black src/ tests/
+isort src/ tests/
+
+# Check types
+mypy src/ --install-types --non-interactive
+
+# Run tests
+pytest --cov=src --cov-fail-under=85 -v
+```
+
+## Benefits
+
+1. **Fast Feedback**: Catch issues in seconds, not minutes
+2. **Confidence**: Know code will pass CI before pushing
+3. **Productivity**: No more waiting for remote builds to fail
+4. **Consistency**: Same checks locally and remotely
+
+## Troubleshooting
+
+### Pre-commit hook doesn't run
+```bash
+chmod +x .git/hooks/pre-commit
+```
+
+### "Command not found" errors
+```bash
+source venv/bin/activate
+pip install -r requirements-dev.txt
+```
+
+### Tests fail locally but pass in CI
+```bash
+# Check environment variables
+echo $DATABASE_URL
+
+# Ensure database is running
+docker-compose up -d postgres
+```
+
+---
+
+**Added**: 2025-10-01
+**Status**: Active ✅
