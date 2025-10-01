@@ -1,0 +1,85 @@
+name: Publish Build Reports
+
+on:
+  workflow_run:
+    workflows: ["CI/CD Pipeline"]
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  publish:
+    name: Generate and Publish Build Health Page
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Download test results artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Generate build health page
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/generate-build-health.py \
+            --coverage coverage.xml \
+            --junit pytest-junit.xml \
+            --output docs/index.html \
+            --repo ${{ github.repository }} \
+            --branch main
+
+      - name: Copy HTML coverage report
+        run: |
+          mkdir -p docs/coverage
+          cp -r htmlcov/* docs/coverage/ || echo "No htmlcov directory found"
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push to gh-pages
+        run: |
+          git fetch origin gh-pages || git checkout --orphan gh-pages
+          git checkout gh-pages || git checkout --orphan gh-pages
+
+          # Remove all files except docs/
+          git rm -rf . || true
+
+          # Copy docs contents to root
+          cp -r docs/* .
+
+          # Add and commit
+          git add .
+          git commit -m "Update build health page from run ${{ github.event.workflow_run.id }}" || echo "No changes to commit"
+
+          # Push to gh-pages branch
+          git push origin gh-pages --force
+
+      - name: Summary
+        run: |
+          echo "✅ Build health page published!"
+          echo "📊 View at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
