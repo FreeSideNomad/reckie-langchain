@@ -64,13 +64,43 @@ def postgres_container():
         yield postgres
 
 
+@pytest.fixture(autouse=True)
+def truncate_tables(postgres_container):
+    """
+    Truncate all tables before each test to ensure test isolation.
+
+    This fixture runs automatically before each test in the e2e directory.
+    """
+    engine = create_engine(postgres_container.get_connection_url())
+
+    # Truncate all tables before the test
+    with engine.connect() as conn:
+        # Disable foreign key checks temporarily
+        conn.execute(text("SET session_replication_role = 'replica'"))
+
+        # Get all table names
+        tables_result = conn.execute(
+            text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
+        )
+        tables = [row[0] for row in tables_result]
+
+        # Truncate all tables
+        for table in tables:
+            conn.execute(text(f"TRUNCATE TABLE {table} CASCADE"))
+
+        # Re-enable foreign key checks
+        conn.execute(text("SET session_replication_role = 'origin'"))
+        conn.commit()
+
+    yield
+
+
 @pytest.fixture
 def test_db(postgres_container):
     """
     Create database session for each test.
 
-    Provides a clean database session with automatic cleanup
-    after each test to ensure test isolation.
+    Provides a clean database session for each test.
 
     Args:
         postgres_container: PostgreSQL container fixture
@@ -85,28 +115,6 @@ def test_db(postgres_container):
     try:
         yield db
     finally:
-        # Clean up all data after test for isolation
-        db.rollback()
-
-        # Truncate all tables to ensure clean state for next test
-        with engine.connect() as conn:
-            # Disable foreign key checks temporarily
-            conn.execute(text("SET session_replication_role = 'replica'"))
-
-            # Get all table names
-            tables_result = conn.execute(
-                text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
-            )
-            tables = [row[0] for row in tables_result]
-
-            # Truncate all tables
-            for table in tables:
-                conn.execute(text(f"TRUNCATE TABLE {table} CASCADE"))
-
-            # Re-enable foreign key checks
-            conn.execute(text("SET session_replication_role = 'origin'"))
-            conn.commit()
-
         db.close()
 
 
