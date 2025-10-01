@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
 from src.api.dependencies import get_db
+from src.api.v1.routes.documents import router as documents_router
 
 # Create FastAPI app
 app = FastAPI(
@@ -28,6 +29,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Include routers
+app.include_router(documents_router, prefix="/api/v1")
+
 
 # Exception handlers
 @app.exception_handler(SQLAlchemyError)
@@ -44,9 +48,20 @@ async def validation_exception_handler(
     request: Request, exc: RequestValidationError
 ) -> JSONResponse:
     """Handle request validation errors."""
+    # Convert errors to JSON-serializable format (exclude ctx with exception objects)
+    errors = []
+    for error in exc.errors():
+        error_dict = {
+            "type": error.get("type"),
+            "loc": error.get("loc"),
+            "msg": error.get("msg"),
+            "input": error.get("input"),
+        }
+        errors.append(error_dict)
+
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content={"detail": "Validation error", "errors": exc.errors()},
+        content={"detail": "Validation error", "errors": errors},
     )
 
 
