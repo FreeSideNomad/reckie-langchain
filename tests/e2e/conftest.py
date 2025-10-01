@@ -32,13 +32,6 @@ def is_docker_available():
         return False
 
 
-# Skip all E2E tests if Docker is not available
-pytestmark = pytest.mark.skipif(
-    not is_docker_available(),
-    reason="Docker is not available - E2E tests require Docker to be running",
-)
-
-
 @pytest.fixture(scope="session")
 def postgres_container():
     """
