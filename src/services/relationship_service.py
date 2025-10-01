@@ -735,7 +735,7 @@ class RelationshipService:
         # Build context from root to immediate parent
         context_parts = ["# Parent Context\n"]
 
-        for doc, _, depth in reversed(ancestors):  # Root first
+        for doc, _, _depth in reversed(ancestors):  # Root first
             # Add section for this parent
             context_parts.append(f"## {doc.document_type}: {doc.title}\n")
 
