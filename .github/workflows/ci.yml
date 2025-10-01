@@ -123,6 +123,7 @@ jobs:
           path: |
             pytest-junit.xml
             htmlcov/
+            coverage.xml
 
       - name: Comment coverage on PR
         if: github.event_name == 'pull_request'
