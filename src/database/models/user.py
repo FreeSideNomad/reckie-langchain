@@ -19,6 +19,7 @@ from src.database.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
     from src.database.models.document import Document
+    from src.database.models.conversation import Conversation
 
 
 class User(Base, TimestampMixin):
@@ -81,6 +82,12 @@ class User(Base, TimestampMixin):
         "Document",
         back_populates="user",
         foreign_keys="[Document.user_id]",
+        cascade="all, delete-orphan"
+    )
+
+    conversations: Mapped[List["Conversation"]] = relationship(
+        "Conversation",
+        back_populates="user",
         cascade="all, delete-orphan"
     )
 
