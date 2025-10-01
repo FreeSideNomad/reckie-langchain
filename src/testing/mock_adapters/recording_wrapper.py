@@ -18,18 +18,19 @@ Usage:
     # → Makes real API call AND saves response to embeddings.yaml
 """
 
+# type: ignore
+
 import hashlib
 import os
 from datetime import datetime
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import yaml
 from langchain_core.callbacks.manager import CallbackManagerForLLMRun
 from langchain_core.embeddings import Embeddings
 from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.messages import AIMessage, BaseMessage
-from langchain_core.outputs import ChatGeneration, ChatResult
+from langchain_core.messages import BaseMessage
+from langchain_core.outputs import ChatResult
 
 
 class RecordingEmbeddings(Embeddings):

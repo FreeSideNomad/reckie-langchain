@@ -3,7 +3,7 @@
 import hashlib
 import os
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Dict, List
 
 import yaml
 from langchain_core.embeddings import Embeddings

@@ -128,16 +128,16 @@ def test_provider_type():
     embeddings = get_embeddings_provider()
     chat = get_chat_provider()
 
-    print(f"\n📊 Provider Information:")
+    print("\n📊 Provider Information:")
     print(f"  Embeddings: {type(embeddings).__name__}")
     print(f"  Chat: {type(chat).__name__}")
 
     if os.getenv("USE_MOCK_ADAPTERS") == "true":
-        print(f"  Mode: 🎭 MOCK (no API calls)")
+        print("  Mode: 🎭 MOCK (no API calls)")
     elif os.getenv("RECORD_FIXTURES") == "true":
-        print(f"  Mode: 🎬 RECORDING (real API + save fixtures)")
+        print("  Mode: 🎬 RECORDING (real API + save fixtures)")
     else:
-        print(f"  Mode: 🌐 REAL (real API calls)")
+        print("  Mode: 🌐 REAL (real API calls)")
 
 
 # Performance baseline test
@@ -151,9 +151,9 @@ def test_performance_baseline():
     embeddings.embed_query("performance test")
     duration = time.time() - start
 
-    print(f"\n⏱️  Performance:")
+    print("\n⏱️  Performance:")
     print(f"  Embedding time: {duration*1000:.2f}ms")
 
     if os.getenv("USE_MOCK_ADAPTERS") == "true":
         assert duration < 0.1, "Mock should be <100ms"
-        print(f"  ✓ Mock mode is fast (<100ms)")
+        print("  ✓ Mock mode is fast (<100ms)")

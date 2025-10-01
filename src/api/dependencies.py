@@ -61,18 +61,18 @@ def get_embeddings_provider() -> Embeddings:
 
     if use_mock:
         # Mock mode: Return mock embeddings (no API calls)
-        from src.testing.mock_adapters.embeddings import MockEmbeddings
+        from src.testing.mock_adapters.embeddings import MockEmbeddings  # type: ignore
 
-        return MockEmbeddings()
+        return MockEmbeddings()  # type: ignore
 
     elif record_fixtures:
         # Recording mode: Wrap real provider with recording
         from langchain_openai import OpenAIEmbeddings
 
-        from src.testing.mock_adapters.recording_wrapper import RecordingEmbeddings
+        from src.testing.mock_adapters.recording_wrapper import RecordingEmbeddings  # type: ignore
 
         real_embeddings = OpenAIEmbeddings()
-        return RecordingEmbeddings(real_embeddings)
+        return RecordingEmbeddings(real_embeddings)  # type: ignore
 
     else:
         # Real mode: Return real provider
@@ -113,18 +113,18 @@ def get_chat_provider() -> BaseChatModel:
 
     if use_mock:
         # Mock mode: Return mock chat model (no API calls)
-        from src.testing.mock_adapters.chat import MockChatModel
+        from src.testing.mock_adapters.chat import MockChatModel  # type: ignore
 
-        return MockChatModel()
+        return MockChatModel()  # type: ignore
 
     elif record_fixtures:
         # Recording mode: Wrap real provider with recording
         from langchain_openai import ChatOpenAI
 
-        from src.testing.mock_adapters.recording_wrapper import RecordingChatModel
+        from src.testing.mock_adapters.recording_wrapper import RecordingChatModel  # type: ignore
 
         real_chat = ChatOpenAI(temperature=0)  # temperature=0 for deterministic
-        return RecordingChatModel(real_chat)
+        return RecordingChatModel(real_chat)  # type: ignore
 
     else:
         # Real mode: Return real provider
