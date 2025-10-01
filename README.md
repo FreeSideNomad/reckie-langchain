@@ -239,18 +239,43 @@ open http://localhost:8000
 
 ## Environment Variables
 
-See `.env.example` (to be created) for all configuration options.
+See `.env.example` for all configuration options. To set up:
 
-Required:
+```bash
+# 1. Copy the template
+cp .env.example .env
+
+# 2. Edit .env and update these required values:
+#    - POSTGRES_PASSWORD: Use a strong password
+#    - OPENAI_API_KEY: Your OpenAI API key from https://platform.openai.com/api-keys
+#    - SECRET_KEY: Generate with: openssl rand -hex 32
+
+# 3. (Optional) Customize other values for your environment
+```
+
+**Required (MUST change from defaults):**
+- `POSTGRES_PASSWORD` - Database password (change from placeholder!)
 - `OPENAI_API_KEY` - OpenAI API key for GPT-4 and embeddings
-- `POSTGRES_PASSWORD` - Database password
-- `SECRET_KEY` - Application secret key
+- `SECRET_KEY` - Application secret key for JWT tokens
 
-Optional (with defaults):
+**Database Configuration:**
 - `POSTGRES_USER` - Database user (default: langchain_user)
 - `POSTGRES_DB` - Database name (default: langchain_docs)
+- `POSTGRES_HOST` - Database host (default: localhost)
 - `POSTGRES_PORT` - Database port (default: 5432)
-- `DATABASE_URL` - Full PostgreSQL connection string
+- `DATABASE_URL` - Full PostgreSQL connection string (auto-constructed)
+
+**Application Configuration:**
+- `ENVIRONMENT` - Environment type (default: development)
+- `APP_HOST` - FastAPI host (default: 0.0.0.0)
+- `APP_PORT` - FastAPI port (default: 8000)
+- `DEBUG` - Debug mode (default: true)
+
+**⚠️ Security Notes:**
+- Never commit `.env` file to git (already in .gitignore)
+- Use strong passwords in production (uppercase, lowercase, numbers, special chars)
+- Regenerate SECRET_KEY for each environment
+- Keep OpenAI API keys secure
 
 ## Project Estimates
 
