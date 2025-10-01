@@ -30,6 +30,9 @@ JSONType = JSON().with_variant(JSONB(), "postgresql")
 if TYPE_CHECKING:
     from src.database.models.user import User
     from src.database.models.document_type import DocumentType
+    from src.database.models.document_relationship import DocumentRelationship
+    from src.database.models.conversation import Conversation
+    from src.database.models.document_version import DocumentVersion
 
 
 class Document(Base, TimestampMixin):
@@ -153,12 +156,34 @@ class Document(Base, TimestampMixin):
         back_populates="documents"
     )
 
-    # Note: These relationships will be added when we create the related models
-    # parent_relationships: Mapped[List["DocumentRelationship"]] = relationship(...)
-    # child_relationships: Mapped[List["DocumentRelationship"]] = relationship(...)
+    parent_relationships: Mapped[List["DocumentRelationship"]] = relationship(
+        "DocumentRelationship",
+        foreign_keys="[DocumentRelationship.child_id]",
+        back_populates="child",
+        cascade="all, delete-orphan"
+    )
+
+    child_relationships: Mapped[List["DocumentRelationship"]] = relationship(
+        "DocumentRelationship",
+        foreign_keys="[DocumentRelationship.parent_id]",
+        back_populates="parent",
+        cascade="all, delete-orphan"
+    )
+
+    conversations: Mapped[List["Conversation"]] = relationship(
+        "Conversation",
+        back_populates="document",
+        cascade="all, delete-orphan"
+    )
+
+    versions: Mapped[List["DocumentVersion"]] = relationship(
+        "DocumentVersion",
+        back_populates="document",
+        cascade="all, delete-orphan"
+    )
+
+    # Note: embeddings will be added when we create the DocumentEmbedding model
     # embeddings: Mapped[List["DocumentEmbedding"]] = relationship(...)
-    # conversations: Mapped[List["Conversation"]] = relationship(...)
-    # versions: Mapped[List["DocumentVersion"]] = relationship(...)
 
     # Validators
     @validates("status")
