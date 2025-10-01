@@ -8,10 +8,12 @@ Provides CRUD operations and validation for document relationships:
 - Delete relationships
 - Validate circular dependencies
 - Validate parent-child type compatibility
+- Hierarchy traversal (ancestors, descendants)
+- Breadcrumb generation
 """
 
 import uuid
-from typing import List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
@@ -384,3 +386,263 @@ class RelationshipService:
         count = row[0] if row else 0
 
         return count > 0
+
+    def get_ancestors(
+        self, document_id: uuid.UUID, max_depth: int = 10
+    ) -> List[Tuple[Document, str, int]]:
+        """
+        Get all ancestor documents using recursive CTE.
+
+        Returns ancestors ordered from immediate parent to root.
+        Example: User Story → Epic → Feature → Vision
+
+        Args:
+            document_id: Document UUID to get ancestors for
+            max_depth: Maximum depth to traverse (default: 10)
+
+        Returns:
+            List of tuples: (Document, relationship_type, depth)
+            where depth=1 is immediate parent, depth=2 is grandparent, etc.
+
+        Example:
+            ancestors = service.get_ancestors(story_id)
+            for doc, rel_type, depth in ancestors:
+                print(f"Depth {depth}: {doc.title} ({rel_type})")
+        """
+        # Convert UUID to string without dashes for SQLite compatibility
+        doc_id_str = str(document_id).replace("-", "")
+
+        query = text(
+            """
+            WITH RECURSIVE ancestors AS (
+                -- Base case: immediate parents
+                SELECT parent_id, child_id, relationship_type, 1 as depth
+                FROM document_relationships
+                WHERE child_id = :document_id
+
+                UNION ALL
+
+                -- Recursive case: parents of parents
+                SELECT dr.parent_id, dr.child_id, dr.relationship_type, a.depth + 1
+                FROM document_relationships dr
+                INNER JOIN ancestors a ON dr.child_id = a.parent_id
+                WHERE a.depth < :max_depth
+            )
+            SELECT parent_id, relationship_type, depth
+            FROM ancestors
+            ORDER BY depth
+        """
+        )
+
+        result = self.db.execute(query, {"document_id": doc_id_str, "max_depth": max_depth})
+        rows = result.fetchall()
+
+        # Fetch Document objects for each parent_id
+        ancestors = []
+        for row in rows:
+            parent_id_str = row[0]
+            # Convert back to UUID format (add dashes)
+            if len(parent_id_str) == 32:  # UUID without dashes
+                parent_id_formatted = (
+                    f"{parent_id_str[:8]}-{parent_id_str[8:12]}-"
+                    f"{parent_id_str[12:16]}-{parent_id_str[16:20]}-{parent_id_str[20:]}"
+                )
+                parent_uuid = uuid.UUID(parent_id_formatted)
+            else:
+                parent_uuid = uuid.UUID(parent_id_str)
+
+            parent_doc = self.db.query(Document).filter(Document.id == parent_uuid).first()
+            if parent_doc:
+                relationship_type = row[1]
+                depth = row[2]
+                ancestors.append((parent_doc, relationship_type, depth))
+
+        return ancestors
+
+    def get_descendants(
+        self, document_id: uuid.UUID, max_depth: Optional[int] = None
+    ) -> List[Tuple[Document, str, int]]:
+        """
+        Get all descendant documents using recursive CTE.
+
+        Returns descendants in breadth-first order.
+        Example: Vision → [F1, F2, F3] → [F1-E1, F1-E2, F2-E1, ...]
+
+        Args:
+            document_id: Document UUID to get descendants for
+            max_depth: Maximum depth to traverse (None = unlimited, 1 = immediate children)
+
+        Returns:
+            List of tuples: (Document, relationship_type, depth)
+            where depth=1 is immediate children, depth=2 is grandchildren, etc.
+
+        Example:
+            # Get immediate children only
+            children = service.get_descendants(vision_id, max_depth=1)
+
+            # Get all descendants
+            all_descendants = service.get_descendants(vision_id)
+        """
+        # Convert UUID to string without dashes for SQLite compatibility
+        doc_id_str = str(document_id).replace("-", "")
+
+        # Set default max_depth to 20 if not specified
+        if max_depth is None:
+            max_depth = 20
+
+        query = text(
+            """
+            WITH RECURSIVE descendants AS (
+                -- Base case: immediate children
+                SELECT parent_id, child_id, relationship_type, 1 as depth
+                FROM document_relationships
+                WHERE parent_id = :document_id
+
+                UNION ALL
+
+                -- Recursive case: children of children
+                SELECT dr.parent_id, dr.child_id, dr.relationship_type, d.depth + 1
+                FROM document_relationships dr
+                INNER JOIN descendants d ON dr.parent_id = d.child_id
+                WHERE d.depth < :max_depth
+            )
+            SELECT child_id, relationship_type, depth
+            FROM descendants
+            ORDER BY depth, child_id
+        """
+        )
+
+        result = self.db.execute(query, {"document_id": doc_id_str, "max_depth": max_depth})
+        rows = result.fetchall()
+
+        # Fetch Document objects for each child_id
+        descendants = []
+        for row in rows:
+            child_id_str = row[0]
+            # Convert back to UUID format (add dashes)
+            if len(child_id_str) == 32:  # UUID without dashes
+                child_id_formatted = (
+                    f"{child_id_str[:8]}-{child_id_str[8:12]}-"
+                    f"{child_id_str[12:16]}-{child_id_str[16:20]}-{child_id_str[20:]}"
+                )
+                child_uuid = uuid.UUID(child_id_formatted)
+            else:
+                child_uuid = uuid.UUID(child_id_str)
+
+            child_doc = self.db.query(Document).filter(Document.id == child_uuid).first()
+            if child_doc:
+                relationship_type = row[1]
+                depth = row[2]
+                descendants.append((child_doc, relationship_type, depth))
+
+        return descendants
+
+    def get_breadcrumb(
+        self, document_id: uuid.UUID, separator: str = " > ", include_ids: bool = False
+    ) -> str:
+        """
+        Generate navigation breadcrumb for a document.
+
+        Creates a path from root to current document.
+        Format: "Vision > Feature F1 > Epic F1-E1 > US-F1-E1-S1"
+
+        Args:
+            document_id: Document UUID to generate breadcrumb for
+            separator: String to separate breadcrumb items (default: " > ")
+            include_ids: Include document IDs in breadcrumb (default: False)
+
+        Returns:
+            Breadcrumb string
+
+        Example:
+            breadcrumb = service.get_breadcrumb(story_id)
+            # Returns: "Test Vision > Test Feature > Test Epic > Test Story"
+
+            breadcrumb_with_ids = service.get_breadcrumb(story_id, include_ids=True)
+            # Returns: "Test Vision [abc...] > Test Feature [def...] > ..."
+        """
+        # Get current document
+        current = self.db.query(Document).filter(Document.id == document_id).first()
+        if not current:
+            return ""
+
+        # Get all ancestors
+        ancestors = self.get_ancestors(document_id)
+
+        # Build breadcrumb from root to current
+        # Ancestors are ordered from immediate parent to root, so reverse them
+        breadcrumb_parts = []
+
+        # Add ancestors in reverse order (root first)
+        for doc, _, _ in reversed(ancestors):
+            if include_ids:
+                breadcrumb_parts.append(f"{doc.title} [{str(doc.id)[:8]}]")
+            else:
+                breadcrumb_parts.append(doc.title)
+
+        # Add current document
+        if include_ids:
+            breadcrumb_parts.append(f"{current.title} [{str(current.id)[:8]}]")
+        else:
+            breadcrumb_parts.append(current.title)
+
+        return separator.join(breadcrumb_parts)
+
+    def get_breadcrumb_with_details(self, document_id: uuid.UUID) -> List[Dict[str, Any]]:
+        """
+        Generate breadcrumb with full document details for linking.
+
+        Returns structured data suitable for rendering as clickable breadcrumb links.
+
+        Args:
+            document_id: Document UUID to generate breadcrumb for
+
+        Returns:
+            List of dicts with keys: id, title, document_type,
+            relationship_type
+
+        Example:
+            breadcrumb = service.get_breadcrumb_with_details(story_id)
+            # Returns: [
+            #   {"id": "...", "title": "Vision",
+            #    "document_type": "vision_document",
+            #    "relationship_type": None},
+            #   {"id": "...", "title": "Feature",
+            #    "document_type": "feature_document",
+            #    "relationship_type": "parent_child"},
+            #   ...
+            # ]
+        """
+        # Get current document
+        current = self.db.query(Document).filter(Document.id == document_id).first()
+        if not current:
+            return []
+
+        # Get all ancestors
+        ancestors = self.get_ancestors(document_id)
+
+        # Build breadcrumb list
+        breadcrumb_items: List[Dict[str, Any]] = []
+
+        # Add ancestors in reverse order (root first)
+        for doc, rel_type, _ in reversed(ancestors):
+            breadcrumb_items.append(
+                {
+                    "id": str(doc.id),
+                    "title": doc.title,
+                    "document_type": doc.document_type,
+                    "relationship_type": rel_type,
+                }
+            )
+
+        # Add current document (no relationship type for current)
+        breadcrumb_items.append(
+            {
+                "id": str(current.id),
+                "title": current.title,
+                "document_type": current.document_type,
+                "relationship_type": None,
+            }
+        )
+
+        return breadcrumb_items
