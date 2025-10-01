@@ -9,12 +9,13 @@ Stores vector embeddings for RAG-powered context retrieval:
 """
 
 import uuid
-from typing import Dict, Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from sqlalchemy import String, Text, Integer, ForeignKey, UniqueConstraint, CheckConstraint, JSON
-from sqlalchemy.dialects.postgresql import UUID as SQLUUID, JSONB
-from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from pgvector.sqlalchemy import Vector
+from sqlalchemy import JSON, CheckConstraint, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import UUID as SQLUUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.database.base import Base, TimestampMixin
 
@@ -47,7 +48,7 @@ class DocumentEmbedding(Base, TimestampMixin):
         SQLUUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
-        comment="UUID primary key generated on insert"
+        comment="UUID primary key generated on insert",
     )
 
     # Foreign Key
@@ -56,20 +57,14 @@ class DocumentEmbedding(Base, TimestampMixin):
         ForeignKey("documents.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
-        comment="Document being embedded"
+        comment="Document being embedded",
     )
 
     # Chunk Data
-    chunk_text: Mapped[str] = mapped_column(
-        Text,
-        nullable=False,
-        comment="Text content of chunk"
-    )
+    chunk_text: Mapped[str] = mapped_column(Text, nullable=False, comment="Text content of chunk")
 
     chunk_index: Mapped[int] = mapped_column(
-        Integer,
-        nullable=False,
-        comment="Index of chunk in document (0, 1, 2, ...)"
+        Integer, nullable=False, comment="Index of chunk in document (0, 1, 2, ...)"
     )
 
     # Vector Embedding
@@ -77,14 +72,12 @@ class DocumentEmbedding(Base, TimestampMixin):
     embedding: Mapped[Optional[str]] = mapped_column(
         Vector(1536) if __name__ != "__main__" else Text,
         nullable=True,
-        comment="Vector embedding (1536 dimensions for OpenAI text-embedding-3-small)"
+        comment="Vector embedding (1536 dimensions for OpenAI text-embedding-3-small)",
     )
 
     # Metadata
     chunk_metadata: Mapped[Dict[str, Any]] = mapped_column(
-        JSONType,
-        default=dict,
-        comment="JSONB for chunk metadata: tokens, context, overlap, etc."
+        JSONType, default=dict, comment="JSONB for chunk metadata: tokens, context, overlap, etc."
     )
 
     # Constraints
@@ -95,9 +88,7 @@ class DocumentEmbedding(Base, TimestampMixin):
 
     # Relationships
     document: Mapped["Document"] = relationship(
-        "Document",
-        foreign_keys=[document_id],
-        back_populates="embeddings"
+        "Document", foreign_keys=[document_id], back_populates="embeddings"
     )
 
     # Validators

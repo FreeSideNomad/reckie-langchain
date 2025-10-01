@@ -22,8 +22,7 @@ from sqlalchemy.pool import QueuePool
 
 # Get database URL from environment
 DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql://langchain_user:changeme@localhost:5432/langchain_docs"
+    "DATABASE_URL", "postgresql://langchain_user:changeme@localhost:5432/langchain_docs"
 )
 
 # Create engine with connection pooling
@@ -60,12 +59,7 @@ def receive_checkout(dbapi_conn, connection_record, connection_proxy):
 
 # Session factory
 # expire_on_commit=False: Don't expire objects after commit (allows accessing them after commit)
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine,
-    expire_on_commit=False
-)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, expire_on_commit=False)
 
 
 def get_db() -> Generator[Session, None, None]:
@@ -151,7 +145,9 @@ def get_db_info() -> dict:
     from urllib.parse import urlparse
 
     parsed = urlparse(DATABASE_URL)
-    safe_url = f"{parsed.scheme}://{parsed.username}:***@{parsed.hostname}:{parsed.port}{parsed.path}"
+    safe_url = (
+        f"{parsed.scheme}://{parsed.username}:***@{parsed.hostname}:{parsed.port}{parsed.path}"
+    )
 
     pool = engine.pool
 

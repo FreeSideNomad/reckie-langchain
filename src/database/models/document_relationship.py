@@ -15,7 +15,7 @@ Supports recursive queries for:
 import uuid
 from typing import TYPE_CHECKING
 
-from sqlalchemy import String, ForeignKey, CheckConstraint, UniqueConstraint
+from sqlalchemy import CheckConstraint, ForeignKey, String, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID as SQLUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
@@ -46,7 +46,7 @@ class DocumentRelationship(Base, TimestampMixin):
         SQLUUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
-        comment="UUID primary key generated on insert"
+        comment="UUID primary key generated on insert",
     )
 
     # Foreign Keys
@@ -55,7 +55,7 @@ class DocumentRelationship(Base, TimestampMixin):
         ForeignKey("documents.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
-        comment="Parent document ID"
+        comment="Parent document ID",
     )
 
     child_id: Mapped[uuid.UUID] = mapped_column(
@@ -63,7 +63,7 @@ class DocumentRelationship(Base, TimestampMixin):
         ForeignKey("documents.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
-        comment="Child document ID"
+        comment="Child document ID",
     )
 
     # Relationship Type
@@ -72,7 +72,7 @@ class DocumentRelationship(Base, TimestampMixin):
         nullable=False,
         default="parent_child",
         index=True,
-        comment="Type of relationship: parent_child, reference, derived_from"
+        comment="Type of relationship: parent_child, reference, derived_from",
     )
 
     # Constraints
@@ -83,15 +83,11 @@ class DocumentRelationship(Base, TimestampMixin):
 
     # Relationships
     parent: Mapped["Document"] = relationship(
-        "Document",
-        foreign_keys=[parent_id],
-        back_populates="child_relationships"
+        "Document", foreign_keys=[parent_id], back_populates="child_relationships"
     )
 
     child: Mapped["Document"] = relationship(
-        "Document",
-        foreign_keys=[child_id],
-        back_populates="parent_relationships"
+        "Document", foreign_keys=[child_id], back_populates="parent_relationships"
     )
 
     # Validators

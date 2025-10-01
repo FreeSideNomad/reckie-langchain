@@ -16,10 +16,11 @@ Each document has:
 """
 
 import uuid
-from typing import Dict, List, Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-from sqlalchemy import String, Text, Integer, ForeignKey, JSON
-from sqlalchemy.dialects.postgresql import UUID as SQLUUID, JSONB
+from sqlalchemy import JSON, ForeignKey, Integer, String, Text
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import UUID as SQLUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.database.base import Base, TimestampMixin
@@ -28,12 +29,12 @@ from src.database.base import Base, TimestampMixin
 JSONType = JSON().with_variant(JSONB(), "postgresql")
 
 if TYPE_CHECKING:
-    from src.database.models.user import User
-    from src.database.models.document_type import DocumentType
-    from src.database.models.document_relationship import DocumentRelationship
     from src.database.models.conversation import Conversation
-    from src.database.models.document_version import DocumentVersion
     from src.database.models.document_embedding import DocumentEmbedding
+    from src.database.models.document_relationship import DocumentRelationship
+    from src.database.models.document_type import DocumentType
+    from src.database.models.document_version import DocumentVersion
+    from src.database.models.user import User
 
 
 class Document(Base, TimestampMixin):
@@ -70,7 +71,7 @@ class Document(Base, TimestampMixin):
         SQLUUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
-        comment="UUID primary key generated on insert"
+        comment="UUID primary key generated on insert",
     )
 
     # Foreign Keys
@@ -79,7 +80,7 @@ class Document(Base, TimestampMixin):
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
-        comment="Document owner (foreign key to users)"
+        comment="Document owner (foreign key to users)",
     )
 
     document_type: Mapped[str] = mapped_column(
@@ -87,46 +88,38 @@ class Document(Base, TimestampMixin):
         ForeignKey("document_types.type_name"),
         nullable=False,
         index=True,
-        comment="Document type (foreign key to document_types)"
+        comment="Document type (foreign key to document_types)",
     )
 
     # Document Content
     title: Mapped[str] = mapped_column(
-        String(500),
-        nullable=False,
-        comment="User-friendly document title"
+        String(500), nullable=False, comment="User-friendly document title"
     )
 
     content_markdown: Mapped[Optional[str]] = mapped_column(
-        Text,
-        nullable=True,
-        comment="Rendered markdown content (AI-generated)"
+        Text, nullable=True, comment="Rendered markdown content (AI-generated)"
     )
 
     domain_model: Mapped[Dict[str, Any]] = mapped_column(
-        JSONType,
-        default=dict,
-        comment="YAML domain model as JSONB (structured data)"
+        JSONType, default=dict, comment="YAML domain model as JSONB (structured data)"
     )
 
     doc_metadata: Mapped[Dict[str, Any]] = mapped_column(
         JSONType,
         default=dict,
-        comment="Additional metadata: tags, priority, story_points, sprint, etc."
+        comment="Additional metadata: tags, priority, story_points, sprint, etc.",
     )
 
     # Version and Status
     version: Mapped[int] = mapped_column(
-        Integer,
-        default=1,
-        comment="Version number (incremented on changes)"
+        Integer, default=1, comment="Version number (incremented on changes)"
     )
 
     status: Mapped[str] = mapped_column(
         String(50),
         default="draft",
         index=True,
-        comment="Document lifecycle status: draft, in_progress, complete, stale"
+        comment="Document lifecycle status: draft, in_progress, complete, stale",
     )
 
     # Audit Fields
@@ -134,59 +127,47 @@ class Document(Base, TimestampMixin):
         SQLUUID(as_uuid=True),
         ForeignKey("users.id"),
         nullable=True,
-        comment="User who created document"
+        comment="User who created document",
     )
 
     updated_by: Mapped[Optional[uuid.UUID]] = mapped_column(
         SQLUUID(as_uuid=True),
         ForeignKey("users.id"),
         nullable=True,
-        comment="User who last updated document"
+        comment="User who last updated document",
     )
 
     # Relationships
-    user: Mapped["User"] = relationship(
-        "User",
-        foreign_keys=[user_id],
-        back_populates="documents"
-    )
+    user: Mapped["User"] = relationship("User", foreign_keys=[user_id], back_populates="documents")
 
     type: Mapped["DocumentType"] = relationship(
-        "DocumentType",
-        foreign_keys=[document_type],
-        back_populates="documents"
+        "DocumentType", foreign_keys=[document_type], back_populates="documents"
     )
 
     parent_relationships: Mapped[List["DocumentRelationship"]] = relationship(
         "DocumentRelationship",
         foreign_keys="[DocumentRelationship.child_id]",
         back_populates="child",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
     )
 
     child_relationships: Mapped[List["DocumentRelationship"]] = relationship(
         "DocumentRelationship",
         foreign_keys="[DocumentRelationship.parent_id]",
         back_populates="parent",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
     )
 
     conversations: Mapped[List["Conversation"]] = relationship(
-        "Conversation",
-        back_populates="document",
-        cascade="all, delete-orphan"
+        "Conversation", back_populates="document", cascade="all, delete-orphan"
     )
 
     versions: Mapped[List["DocumentVersion"]] = relationship(
-        "DocumentVersion",
-        back_populates="document",
-        cascade="all, delete-orphan"
+        "DocumentVersion", back_populates="document", cascade="all, delete-orphan"
     )
 
     embeddings: Mapped[List["DocumentEmbedding"]] = relationship(
-        "DocumentEmbedding",
-        back_populates="document",
-        cascade="all, delete-orphan"
+        "DocumentEmbedding", back_populates="document", cascade="all, delete-orphan"
     )
 
     # Validators
@@ -207,9 +188,7 @@ class Document(Base, TimestampMixin):
         """
         allowed_statuses = ["draft", "in_progress", "complete", "stale"]
         if status not in allowed_statuses:
-            raise ValueError(
-                f"Invalid status: {status}. Must be one of {allowed_statuses}"
-            )
+            raise ValueError(f"Invalid status: {status}. Must be one of {allowed_statuses}")
         return status
 
     @validates("version")

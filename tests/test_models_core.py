@@ -9,18 +9,18 @@ Tests:
 - Helper methods
 """
 
-import pytest
 import uuid
 from datetime import datetime
 
+import pytest
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
 from src.database.base import Base
-from src.database.models.user import User
-from src.database.models.document_type import DocumentType
 from src.database.models.document import Document
+from src.database.models.document_type import DocumentType
+from src.database.models.user import User
 
 
 @pytest.fixture
@@ -48,7 +48,7 @@ class TestUserModel:
             username="testuser",
             email="test@example.com",
             password_hash="hashed_password_123",
-            role="user"
+            role="user",
         )
         session.add(user)
         session.commit()
@@ -62,10 +62,7 @@ class TestUserModel:
     def test_email_lowercase_validation(self, session):
         """Test email is automatically converted to lowercase."""
         user = User(
-            username="testuser",
-            email="TEST@EXAMPLE.COM",
-            password_hash="hash",
-            role="user"
+            username="testuser", email="TEST@EXAMPLE.COM", password_hash="hash", role="user"
         )
         session.add(user)
         session.commit()
@@ -75,12 +72,7 @@ class TestUserModel:
     def test_invalid_email_format(self):
         """Test invalid email format raises ValueError."""
         with pytest.raises(ValueError, match="Invalid email format"):
-            User(
-                username="testuser",
-                email="invalid-email",
-                password_hash="hash",
-                role="user"
-            )
+            User(username="testuser", email="invalid-email", password_hash="hash", role="user")
 
     def test_invalid_role(self):
         """Test invalid role raises ValueError."""
@@ -89,7 +81,7 @@ class TestUserModel:
                 username="testuser",
                 email="test@example.com",
                 password_hash="hash",
-                role="invalid_role"
+                role="invalid_role",
             )
 
     def test_valid_roles(self, session):
@@ -101,7 +93,7 @@ class TestUserModel:
                 username=f"user_{role}",
                 email=f"{role}@example.com",
                 password_hash="hash",
-                role=role
+                role=role,
             )
             session.add(user)
             session.commit()
@@ -112,19 +104,13 @@ class TestUserModel:
     def test_unique_username(self, session):
         """Test username must be unique."""
         user1 = User(
-            username="duplicate",
-            email="user1@example.com",
-            password_hash="hash",
-            role="user"
+            username="duplicate", email="user1@example.com", password_hash="hash", role="user"
         )
         session.add(user1)
         session.commit()
 
         user2 = User(
-            username="duplicate",
-            email="user2@example.com",
-            password_hash="hash",
-            role="user"
+            username="duplicate", email="user2@example.com", password_hash="hash", role="user"
         )
         session.add(user2)
 
@@ -138,7 +124,7 @@ class TestUserModel:
             username="testuser",
             email="test@example.com",
             password_hash="hash",
-            role="admin"
+            role="admin",
         )
         repr_str = repr(user)
 
@@ -155,11 +141,9 @@ class TestDocumentTypeModel:
         doc_type = DocumentType(
             type_name="vision_document",
             system_prompt="You are a product owner...",
-            workflow_steps=[
-                {"step_id": "define_vision", "question_count": 5}
-            ],
+            workflow_steps=[{"step_id": "define_vision", "question_count": 5}],
             parent_types=["research_report", "business_context"],
-            allowed_personas=["product_owner"]
+            allowed_personas=["product_owner"],
         )
         session.add(doc_type)
         session.commit()
@@ -173,9 +157,7 @@ class TestDocumentTypeModel:
     def test_type_name_validation(self):
         """Test type_name is converted to lowercase with underscores."""
         doc_type = DocumentType(
-            type_name="Vision Document",
-            system_prompt="Test",
-            workflow_steps=[]
+            type_name="Vision Document", system_prompt="Test", workflow_steps=[]
         )
 
         validated_name = doc_type.validate_type_name("type_name", "Vision Document")
@@ -186,11 +168,7 @@ class TestDocumentTypeModel:
         doc_type = DocumentType(
             type_name="test_type",
             system_prompt="Test",
-            workflow_steps=[
-                {"step_id": "step1"},
-                {"step_id": "step2"},
-                {"step_id": "step3"}
-            ]
+            workflow_steps=[{"step_id": "step1"}, {"step_id": "step2"}, {"step_id": "step3"}],
         )
         session.add(doc_type)
         session.commit()
@@ -204,8 +182,8 @@ class TestDocumentTypeModel:
             system_prompt="Test",
             workflow_steps=[
                 {"step_id": "step1", "name": "First Step"},
-                {"step_id": "step2", "name": "Second Step"}
-            ]
+                {"step_id": "step2", "name": "Second Step"},
+            ],
         )
         session.add(doc_type)
         session.commit()
@@ -216,9 +194,7 @@ class TestDocumentTypeModel:
     def test_get_workflow_step_not_found(self, session):
         """Test getting non-existent workflow step raises error."""
         doc_type = DocumentType(
-            type_name="test_type",
-            system_prompt="Test",
-            workflow_steps=[{"step_id": "step1"}]
+            type_name="test_type", system_prompt="Test", workflow_steps=[{"step_id": "step1"}]
         )
         session.add(doc_type)
         session.commit()
@@ -232,7 +208,7 @@ class TestDocumentTypeModel:
             type_name="feature_document",
             system_prompt="Test",
             workflow_steps=[],
-            parent_types=["vision_document"]
+            parent_types=["vision_document"],
         )
         session.add(doc_type)
         session.commit()
@@ -246,7 +222,7 @@ class TestDocumentTypeModel:
             type_name="test_type",
             system_prompt="Test",
             workflow_steps=[],
-            allowed_personas=["product_owner", "business_analyst"]
+            allowed_personas=["product_owner", "business_analyst"],
         )
         session.add(doc_type)
         session.commit()
@@ -262,19 +238,14 @@ class TestDocumentModel:
         """Test creating a document."""
         # Create user first
         user = User(
-            username="testuser",
-            email="test@example.com",
-            password_hash="hash",
-            role="user"
+            username="testuser", email="test@example.com", password_hash="hash", role="user"
         )
         session.add(user)
         session.commit()
 
         # Create document type
         doc_type = DocumentType(
-            type_name="vision_document",
-            system_prompt="Test",
-            workflow_steps=[]
+            type_name="vision_document", system_prompt="Test", workflow_steps=[]
         )
         session.add(doc_type)
         session.commit()
@@ -285,7 +256,7 @@ class TestDocumentModel:
             document_type=doc_type.type_name,
             title="Test Vision",
             content_markdown="# Vision Content",
-            status="draft"
+            status="draft",
         )
         session.add(document)
         session.commit()
@@ -302,25 +273,18 @@ class TestDocumentModel:
                 user_id=uuid.uuid4(),
                 document_type="test_type",
                 title="Test",
-                status="invalid_status"
+                status="invalid_status",
             )
 
     def test_valid_statuses(self, session):
         """Test all valid statuses are accepted."""
         user = User(
-            username="testuser",
-            email="test@example.com",
-            password_hash="hash",
-            role="user"
+            username="testuser", email="test@example.com", password_hash="hash", role="user"
         )
         session.add(user)
         session.commit()
 
-        doc_type = DocumentType(
-            type_name="test_type",
-            system_prompt="Test",
-            workflow_steps=[]
-        )
+        doc_type = DocumentType(type_name="test_type", system_prompt="Test", workflow_steps=[])
         session.add(doc_type)
         session.commit()
 
@@ -331,7 +295,7 @@ class TestDocumentModel:
                 user_id=user.id,
                 document_type=doc_type.type_name,
                 title=f"Doc {status}",
-                status=status
+                status=status,
             )
             session.add(document)
             session.commit()
@@ -342,28 +306,16 @@ class TestDocumentModel:
     def test_version_validation(self):
         """Test version must be positive."""
         with pytest.raises(ValueError, match="Version must be >= 1"):
-            Document(
-                user_id=uuid.uuid4(),
-                document_type="test_type",
-                title="Test",
-                version=0
-            )
+            Document(user_id=uuid.uuid4(), document_type="test_type", title="Test", version=0)
 
     def test_metadata_operations(self, session):
         """Test metadata get/set operations."""
         user = User(
-            username="testuser",
-            email="test@example.com",
-            password_hash="hash",
-            role="user"
+            username="testuser", email="test@example.com", password_hash="hash", role="user"
         )
         session.add(user)
 
-        doc_type = DocumentType(
-            type_name="test_type",
-            system_prompt="Test",
-            workflow_steps=[]
-        )
+        doc_type = DocumentType(type_name="test_type", system_prompt="Test", workflow_steps=[])
         session.add(doc_type)
         session.commit()
 
@@ -371,7 +323,7 @@ class TestDocumentModel:
             user_id=user.id,
             document_type=doc_type.type_name,
             title="Test",
-            doc_metadata={"priority": "P0", "tags": ["important"]}
+            doc_metadata={"priority": "P0", "tags": ["important"]},
         )
         session.add(document)
         session.commit()
@@ -387,18 +339,11 @@ class TestDocumentModel:
     def test_helper_methods(self, session):
         """Test helper methods (is_complete, mark_complete, etc.)."""
         user = User(
-            username="testuser",
-            email="test@example.com",
-            password_hash="hash",
-            role="user"
+            username="testuser", email="test@example.com", password_hash="hash", role="user"
         )
         session.add(user)
 
-        doc_type = DocumentType(
-            type_name="test_type",
-            system_prompt="Test",
-            workflow_steps=[]
-        )
+        doc_type = DocumentType(type_name="test_type", system_prompt="Test", workflow_steps=[])
         session.add(doc_type)
         session.commit()
 
@@ -407,7 +352,7 @@ class TestDocumentModel:
             document_type=doc_type.type_name,
             title="Test",
             status="draft",
-            version=1
+            version=1,
         )
         session.add(document)
         session.commit()
@@ -432,32 +377,15 @@ class TestDocumentModel:
 
 def test_user_document_relationship(session):
     """Test relationship between User and Document."""
-    user = User(
-        username="testuser",
-        email="test@example.com",
-        password_hash="hash",
-        role="user"
-    )
+    user = User(username="testuser", email="test@example.com", password_hash="hash", role="user")
     session.add(user)
 
-    doc_type = DocumentType(
-        type_name="test_type",
-        system_prompt="Test",
-        workflow_steps=[]
-    )
+    doc_type = DocumentType(type_name="test_type", system_prompt="Test", workflow_steps=[])
     session.add(doc_type)
     session.commit()
 
-    doc1 = Document(
-        user_id=user.id,
-        document_type=doc_type.type_name,
-        title="Doc 1"
-    )
-    doc2 = Document(
-        user_id=user.id,
-        document_type=doc_type.type_name,
-        title="Doc 2"
-    )
+    doc1 = Document(user_id=user.id, document_type=doc_type.type_name, title="Doc 1")
+    doc2 = Document(user_id=user.id, document_type=doc_type.type_name, title="Doc 2")
     session.add_all([doc1, doc2])
     session.commit()
 
@@ -473,7 +401,7 @@ def test_document_type_invalid_workflow_steps():
         DocumentType(
             type_name="test_type",
             system_prompt="Test",
-            workflow_steps="not_a_list"  # Invalid: should be list
+            workflow_steps="not_a_list",  # Invalid: should be list
         )
 
 
@@ -483,25 +411,16 @@ def test_document_type_name_with_invalid_chars():
         DocumentType(
             type_name="test-type!",  # Invalid: contains special chars
             system_prompt="Test",
-            workflow_steps=[]
+            workflow_steps=[],
         )
 
 
 def test_document_get_domain_model_value(session):
     """Test get_domain_model_value helper."""
-    user = User(
-        username="testuser",
-        email="test@example.com",
-        password_hash="hash",
-        role="user"
-    )
+    user = User(username="testuser", email="test@example.com", password_hash="hash", role="user")
     session.add(user)
 
-    doc_type = DocumentType(
-        type_name="test_type",
-        system_prompt="Test",
-        workflow_steps=[]
-    )
+    doc_type = DocumentType(type_name="test_type", system_prompt="Test", workflow_steps=[])
     session.add(doc_type)
     session.commit()
 
@@ -509,7 +428,7 @@ def test_document_get_domain_model_value(session):
         user_id=user.id,
         document_type=doc_type.type_name,
         title="Test",
-        domain_model={"key1": "value1", "key2": 123}
+        domain_model={"key1": "value1", "key2": 123},
     )
     session.add(document)
     session.commit()
@@ -522,27 +441,15 @@ def test_document_get_domain_model_value(session):
 
 def test_document_is_draft(session):
     """Test is_draft helper."""
-    user = User(
-        username="testuser",
-        email="test@example.com",
-        password_hash="hash",
-        role="user"
-    )
+    user = User(username="testuser", email="test@example.com", password_hash="hash", role="user")
     session.add(user)
 
-    doc_type = DocumentType(
-        type_name="test_type",
-        system_prompt="Test",
-        workflow_steps=[]
-    )
+    doc_type = DocumentType(type_name="test_type", system_prompt="Test", workflow_steps=[])
     session.add(doc_type)
     session.commit()
 
     document = Document(
-        user_id=user.id,
-        document_type=doc_type.type_name,
-        title="Test",
-        status="draft"
+        user_id=user.id, document_type=doc_type.type_name, title="Test", status="draft"
     )
     session.add(document)
     session.commit()

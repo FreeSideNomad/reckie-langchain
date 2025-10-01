@@ -9,21 +9,21 @@ Tests:
 - Helper methods
 """
 
-import pytest
 import uuid
 from datetime import datetime
 
+import pytest
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
 from src.database.base import Base
-from src.database.models.user import User
-from src.database.models.document_type import DocumentType
+from src.database.models.conversation import Conversation
 from src.database.models.document import Document
 from src.database.models.document_relationship import DocumentRelationship
-from src.database.models.conversation import Conversation
+from src.database.models.document_type import DocumentType
 from src.database.models.document_version import DocumentVersion
+from src.database.models.user import User
 
 
 @pytest.fixture
@@ -45,12 +45,7 @@ def session(engine):
 @pytest.fixture
 def user(session):
     """Create a test user."""
-    user = User(
-        username="testuser",
-        email="test@example.com",
-        password_hash="hash",
-        role="user"
-    )
+    user = User(username="testuser", email="test@example.com", password_hash="hash", role="user")
     session.add(user)
     session.commit()
     return user
@@ -59,11 +54,7 @@ def user(session):
 @pytest.fixture
 def doc_type(session):
     """Create a test document type."""
-    doc_type = DocumentType(
-        type_name="test_type",
-        system_prompt="Test",
-        workflow_steps=[]
-    )
+    doc_type = DocumentType(type_name="test_type", system_prompt="Test", workflow_steps=[])
     session.add(doc_type)
     session.commit()
     return doc_type
@@ -72,11 +63,7 @@ def doc_type(session):
 @pytest.fixture
 def document(session, user, doc_type):
     """Create a test document."""
-    document = Document(
-        user_id=user.id,
-        document_type=doc_type.type_name,
-        title="Test Document"
-    )
+    document = Document(user_id=user.id, document_type=doc_type.type_name, title="Test Document")
     session.add(document)
     session.commit()
     return document
@@ -87,23 +74,13 @@ class TestDocumentRelationshipModel:
 
     def test_create_relationship(self, session, user, doc_type):
         """Test creating a document relationship."""
-        parent = Document(
-            user_id=user.id,
-            document_type=doc_type.type_name,
-            title="Parent Doc"
-        )
-        child = Document(
-            user_id=user.id,
-            document_type=doc_type.type_name,
-            title="Child Doc"
-        )
+        parent = Document(user_id=user.id, document_type=doc_type.type_name, title="Parent Doc")
+        child = Document(user_id=user.id, document_type=doc_type.type_name, title="Child Doc")
         session.add_all([parent, child])
         session.commit()
 
         relationship = DocumentRelationship(
-            parent_id=parent.id,
-            child_id=child.id,
-            relationship_type="parent_child"
+            parent_id=parent.id, child_id=child.id, relationship_type="parent_child"
         )
         session.add(relationship)
         session.commit()
@@ -117,18 +94,12 @@ class TestDocumentRelationshipModel:
         """Test relationship_type validation."""
         with pytest.raises(ValueError, match="Invalid relationship_type"):
             DocumentRelationship(
-                parent_id=uuid.uuid4(),
-                child_id=uuid.uuid4(),
-                relationship_type="invalid_type"
+                parent_id=uuid.uuid4(), child_id=uuid.uuid4(), relationship_type="invalid_type"
             )
 
     def test_valid_relationship_types(self, session, user, doc_type):
         """Test all valid relationship types are accepted."""
-        parent = Document(
-            user_id=user.id,
-            document_type=doc_type.type_name,
-            title="Parent"
-        )
+        parent = Document(user_id=user.id, document_type=doc_type.type_name, title="Parent")
         session.add(parent)
         session.commit()
 
@@ -136,17 +107,13 @@ class TestDocumentRelationshipModel:
 
         for rel_type in valid_types:
             child = Document(
-                user_id=user.id,
-                document_type=doc_type.type_name,
-                title=f"Child {rel_type}"
+                user_id=user.id, document_type=doc_type.type_name, title=f"Child {rel_type}"
             )
             session.add(child)
             session.commit()
 
             rel = DocumentRelationship(
-                parent_id=parent.id,
-                child_id=child.id,
-                relationship_type=rel_type
+                parent_id=parent.id, child_id=child.id, relationship_type=rel_type
             )
             session.add(rel)
             session.commit()
@@ -156,31 +123,19 @@ class TestDocumentRelationshipModel:
 
     def test_unique_constraint(self, session, user, doc_type):
         """Test unique constraint on (parent_id, child_id)."""
-        parent = Document(
-            user_id=user.id,
-            document_type=doc_type.type_name,
-            title="Parent"
-        )
-        child = Document(
-            user_id=user.id,
-            document_type=doc_type.type_name,
-            title="Child"
-        )
+        parent = Document(user_id=user.id, document_type=doc_type.type_name, title="Parent")
+        child = Document(user_id=user.id, document_type=doc_type.type_name, title="Child")
         session.add_all([parent, child])
         session.commit()
 
         rel1 = DocumentRelationship(
-            parent_id=parent.id,
-            child_id=child.id,
-            relationship_type="parent_child"
+            parent_id=parent.id, child_id=child.id, relationship_type="parent_child"
         )
         session.add(rel1)
         session.commit()
 
         rel2 = DocumentRelationship(
-            parent_id=parent.id,
-            child_id=child.id,
-            relationship_type="reference"
+            parent_id=parent.id, child_id=child.id, relationship_type="reference"
         )
         session.add(rel2)
 
@@ -189,23 +144,13 @@ class TestDocumentRelationshipModel:
 
     def test_relationship_back_populates(self, session, user, doc_type):
         """Test relationship back-populates work correctly."""
-        parent = Document(
-            user_id=user.id,
-            document_type=doc_type.type_name,
-            title="Parent"
-        )
-        child = Document(
-            user_id=user.id,
-            document_type=doc_type.type_name,
-            title="Child"
-        )
+        parent = Document(user_id=user.id, document_type=doc_type.type_name, title="Parent")
+        child = Document(user_id=user.id, document_type=doc_type.type_name, title="Child")
         session.add_all([parent, child])
         session.commit()
 
         rel = DocumentRelationship(
-            parent_id=parent.id,
-            child_id=child.id,
-            relationship_type="parent_child"
+            parent_id=parent.id, child_id=child.id, relationship_type="parent_child"
         )
         session.add(rel)
         session.commit()
@@ -222,12 +167,7 @@ class TestConversationModel:
 
     def test_create_conversation(self, session, user, document):
         """Test creating a conversation."""
-        conversation = Conversation(
-            user_id=user.id,
-            document_id=document.id,
-            history=[],
-            state={}
-        )
+        conversation = Conversation(user_id=user.id, document_id=document.id, history=[], state={})
         session.add(conversation)
         session.commit()
 
@@ -239,10 +179,7 @@ class TestConversationModel:
 
     def test_add_message(self, session, user, document):
         """Test add_message helper."""
-        conversation = Conversation(
-            user_id=user.id,
-            document_id=document.id
-        )
+        conversation = Conversation(user_id=user.id, document_id=document.id)
         session.add(conversation)
         session.commit()
 
@@ -260,7 +197,7 @@ class TestConversationModel:
         conversation = Conversation(
             user_id=user.id,
             document_id=document.id,
-            state={"current_step": "step1", "turn_count": 3}
+            state={"current_step": "step1", "turn_count": 3},
         )
         session.add(conversation)
         session.commit()
@@ -269,10 +206,7 @@ class TestConversationModel:
 
     def test_update_workflow_state(self, session, user, document):
         """Test update_workflow_state helper."""
-        conversation = Conversation(
-            user_id=user.id,
-            document_id=document.id
-        )
+        conversation = Conversation(user_id=user.id, document_id=document.id)
         session.add(conversation)
         session.commit()
 
@@ -284,10 +218,7 @@ class TestConversationModel:
 
     def test_get_message_count(self, session, user, document):
         """Test get_message_count helper."""
-        conversation = Conversation(
-            user_id=user.id,
-            document_id=document.id
-        )
+        conversation = Conversation(user_id=user.id, document_id=document.id)
         session.add(conversation)
         session.commit()
 
@@ -298,17 +229,11 @@ class TestConversationModel:
 
     def test_unique_user_document_constraint(self, session, user, document):
         """Test unique constraint on (user_id, document_id)."""
-        conv1 = Conversation(
-            user_id=user.id,
-            document_id=document.id
-        )
+        conv1 = Conversation(user_id=user.id, document_id=document.id)
         session.add(conv1)
         session.commit()
 
-        conv2 = Conversation(
-            user_id=user.id,
-            document_id=document.id
-        )
+        conv2 = Conversation(user_id=user.id, document_id=document.id)
         session.add(conv2)
 
         with pytest.raises(IntegrityError):
@@ -326,7 +251,7 @@ class TestDocumentVersionModel:
             content_markdown="# Version 1",
             domain_model={"key": "value"},
             changed_by=user.id,
-            change_description="Initial version"
+            change_description="Initial version",
         )
         session.add(version)
         session.commit()
@@ -341,28 +266,18 @@ class TestDocumentVersionModel:
     def test_version_validation(self):
         """Test version must be positive."""
         with pytest.raises(ValueError, match="Version must be >= 1"):
-            DocumentVersion(
-                document_id=uuid.uuid4(),
-                version=0,
-                content_markdown="Test"
-            )
+            DocumentVersion(document_id=uuid.uuid4(), version=0, content_markdown="Test")
 
     def test_unique_document_version_constraint(self, session, document, user):
         """Test unique constraint on (document_id, version)."""
         v1 = DocumentVersion(
-            document_id=document.id,
-            version=1,
-            content_markdown="V1",
-            changed_by=user.id
+            document_id=document.id, version=1, content_markdown="V1", changed_by=user.id
         )
         session.add(v1)
         session.commit()
 
         v2 = DocumentVersion(
-            document_id=document.id,
-            version=1,
-            content_markdown="V1 duplicate",
-            changed_by=user.id
+            document_id=document.id, version=1, content_markdown="V1 duplicate", changed_by=user.id
         )
         session.add(v2)
 
@@ -375,7 +290,7 @@ class TestDocumentVersionModel:
             document_id=document.id,
             version=1,
             domain_model={"key1": "value1", "key2": 123},
-            changed_by=user.id
+            changed_by=user.id,
         )
         session.add(version)
         session.commit()
@@ -387,16 +302,10 @@ class TestDocumentVersionModel:
     def test_version_relationship(self, session, user, document):
         """Test relationship between Document and DocumentVersion."""
         v1 = DocumentVersion(
-            document_id=document.id,
-            version=1,
-            content_markdown="V1",
-            changed_by=user.id
+            document_id=document.id, version=1, content_markdown="V1", changed_by=user.id
         )
         v2 = DocumentVersion(
-            document_id=document.id,
-            version=2,
-            content_markdown="V2",
-            changed_by=user.id
+            document_id=document.id, version=2, content_markdown="V2", changed_by=user.id
         )
         session.add_all([v1, v2])
         session.commit()
@@ -409,10 +318,7 @@ class TestDocumentVersionModel:
 
 def test_conversation_relationship(session, user, document):
     """Test relationship between User/Document and Conversation."""
-    conv = Conversation(
-        user_id=user.id,
-        document_id=document.id
-    )
+    conv = Conversation(user_id=user.id, document_id=document.id)
     session.add(conv)
     session.commit()
 

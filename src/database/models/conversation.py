@@ -8,11 +8,12 @@ Stores conversation state and message history for multi-turn conversations:
 """
 
 import uuid
-from typing import Dict, List, Any, Optional, TYPE_CHECKING
 from datetime import datetime
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-from sqlalchemy import String, ForeignKey, UniqueConstraint, JSON
-from sqlalchemy.dialects.postgresql import UUID as SQLUUID, JSONB
+from sqlalchemy import JSON, ForeignKey, String, UniqueConstraint
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import UUID as SQLUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database.base import Base, TimestampMixin
@@ -21,8 +22,8 @@ from src.database.base import Base, TimestampMixin
 JSONType = JSON().with_variant(JSONB(), "postgresql")
 
 if TYPE_CHECKING:
-    from src.database.models.user import User
     from src.database.models.document import Document
+    from src.database.models.user import User
 
 
 class Conversation(Base, TimestampMixin):
@@ -48,7 +49,7 @@ class Conversation(Base, TimestampMixin):
         SQLUUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
-        comment="UUID primary key generated on insert"
+        comment="UUID primary key generated on insert",
     )
 
     # Foreign Keys
@@ -57,7 +58,7 @@ class Conversation(Base, TimestampMixin):
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
-        comment="User participating in conversation"
+        comment="User participating in conversation",
     )
 
     document_id: Mapped[uuid.UUID] = mapped_column(
@@ -65,38 +66,30 @@ class Conversation(Base, TimestampMixin):
         ForeignKey("documents.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
-        comment="Document being discussed"
+        comment="Document being discussed",
     )
 
     # Conversation Data
     history: Mapped[List[Dict[str, Any]]] = mapped_column(
-        JSONType,
-        default=list,
-        comment="JSONB array of messages: [{role, content, timestamp}]"
+        JSONType, default=list, comment="JSONB array of messages: [{role, content, timestamp}]"
     )
 
     state: Mapped[Dict[str, Any]] = mapped_column(
         JSONType,
         default=dict,
-        comment="JSONB workflow state: {current_step, turn_count, started_at, workflow_data}"
+        comment="JSONB workflow state: {current_step, turn_count, started_at, workflow_data}",
     )
 
     # Constraints
-    __table_args__ = (
-        UniqueConstraint("user_id", "document_id", name="uq_user_document"),
-    )
+    __table_args__ = (UniqueConstraint("user_id", "document_id", name="uq_user_document"),)
 
     # Relationships
     user: Mapped["User"] = relationship(
-        "User",
-        foreign_keys=[user_id],
-        back_populates="conversations"
+        "User", foreign_keys=[user_id], back_populates="conversations"
     )
 
     document: Mapped["Document"] = relationship(
-        "Document",
-        foreign_keys=[document_id],
-        back_populates="conversations"
+        "Document", foreign_keys=[document_id], back_populates="conversations"
     )
 
     # Helper Methods
@@ -111,11 +104,7 @@ class Conversation(Base, TimestampMixin):
         if not isinstance(self.history, list):
             self.history = []
 
-        message = {
-            "role": role,
-            "content": content,
-            "timestamp": datetime.now().isoformat()
-        }
+        message = {"role": role, "content": content, "timestamp": datetime.now().isoformat()}
         self.history.append(message)
 
     def get_current_step(self) -> Optional[str]:
