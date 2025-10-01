@@ -99,7 +99,7 @@ class TimestampMixin:
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False,
-        comment="Creation timestamp (UTC)"
+        comment="Creation timestamp (UTC)",
     )
 
     updated_at: Mapped[datetime] = mapped_column(
@@ -107,5 +107,5 @@ class TimestampMixin:
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False,
-        comment="Last update timestamp (UTC, auto-updated by trigger)"
+        comment="Last update timestamp (UTC, auto-updated by trigger)",
     )

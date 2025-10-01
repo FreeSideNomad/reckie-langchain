@@ -9,7 +9,7 @@ Represents users in the system with different roles:
 """
 
 import uuid
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy import String, event
 from sqlalchemy.dialects.postgresql import UUID as SQLUUID
@@ -18,8 +18,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from src.database.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
-    from src.database.models.document import Document
     from src.database.models.conversation import Conversation
+    from src.database.models.document import Document
 
 
 class User(Base, TimestampMixin):
@@ -44,37 +44,27 @@ class User(Base, TimestampMixin):
         SQLUUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
-        comment="UUID primary key generated on insert"
+        comment="UUID primary key generated on insert",
     )
 
     # User Information
     username: Mapped[str] = mapped_column(
-        String(50),
-        unique=True,
-        nullable=False,
-        index=True,
-        comment="Unique username for login"
+        String(50), unique=True, nullable=False, index=True, comment="Unique username for login"
     )
 
     email: Mapped[str] = mapped_column(
-        String(255),
-        unique=True,
-        nullable=False,
-        index=True,
-        comment="Unique email address"
+        String(255), unique=True, nullable=False, index=True, comment="Unique email address"
     )
 
     password_hash: Mapped[str] = mapped_column(
-        String(255),
-        nullable=False,
-        comment="Hashed password (bcrypt)"
+        String(255), nullable=False, comment="Hashed password (bcrypt)"
     )
 
     role: Mapped[str] = mapped_column(
         String(50),
         nullable=False,
         default="user",
-        comment="User role: user, admin, qa_lead, ddd_designer"
+        comment="User role: user, admin, qa_lead, ddd_designer",
     )
 
     # Relationships
@@ -82,13 +72,11 @@ class User(Base, TimestampMixin):
         "Document",
         back_populates="user",
         foreign_keys="[Document.user_id]",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
     )
 
     conversations: Mapped[List["Conversation"]] = relationship(
-        "Conversation",
-        back_populates="user",
-        cascade="all, delete-orphan"
+        "Conversation", back_populates="user", cascade="all, delete-orphan"
     )
 
     # Validators
@@ -128,9 +116,7 @@ class User(Base, TimestampMixin):
         """
         allowed_roles = ["user", "admin", "qa_lead", "ddd_designer"]
         if role not in allowed_roles:
-            raise ValueError(
-                f"Invalid role: {role}. Must be one of {allowed_roles}"
-            )
+            raise ValueError(f"Invalid role: {role}. Must be one of {allowed_roles}")
         return role
 
     def __repr__(self) -> str:

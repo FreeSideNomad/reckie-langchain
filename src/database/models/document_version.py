@@ -8,11 +8,12 @@ Stores complete snapshots of documents for version control:
 """
 
 import uuid
-from typing import Dict, Any, Optional, TYPE_CHECKING
 from datetime import datetime
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from sqlalchemy import String, Text, Integer, ForeignKey, UniqueConstraint, CheckConstraint, JSON
-from sqlalchemy.dialects.postgresql import UUID as SQLUUID, JSONB
+from sqlalchemy import JSON, CheckConstraint, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import UUID as SQLUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.database.base import Base
@@ -49,7 +50,7 @@ class DocumentVersion(Base):
         SQLUUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
-        comment="UUID primary key generated on insert"
+        comment="UUID primary key generated on insert",
     )
 
     # Foreign Keys
@@ -58,7 +59,7 @@ class DocumentVersion(Base):
         ForeignKey("documents.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
-        comment="Document being versioned"
+        comment="Document being versioned",
     )
 
     changed_by: Mapped[Optional[uuid.UUID]] = mapped_column(
@@ -66,39 +67,29 @@ class DocumentVersion(Base):
         ForeignKey("users.id", ondelete="SET NULL"),
         nullable=True,
         index=True,
-        comment="User who made the change"
+        comment="User who made the change",
     )
 
     # Version Data
     version: Mapped[int] = mapped_column(
-        Integer,
-        nullable=False,
-        comment="Version number (1, 2, 3, ...)"
+        Integer, nullable=False, comment="Version number (1, 2, 3, ...)"
     )
 
     content_markdown: Mapped[Optional[str]] = mapped_column(
-        Text,
-        nullable=True,
-        comment="Snapshot of markdown content"
+        Text, nullable=True, comment="Snapshot of markdown content"
     )
 
     domain_model: Mapped[Dict[str, Any]] = mapped_column(
-        JSONType,
-        default=dict,
-        comment="Snapshot of domain model as JSONB"
+        JSONType, default=dict, comment="Snapshot of domain model as JSONB"
     )
 
     # Audit Fields
     changed_at: Mapped[datetime] = mapped_column(
-        nullable=False,
-        default=datetime.now,
-        comment="When the change was made"
+        nullable=False, default=datetime.now, comment="When the change was made"
     )
 
     change_description: Mapped[Optional[str]] = mapped_column(
-        Text,
-        nullable=True,
-        comment="Description of what changed"
+        Text, nullable=True, comment="Description of what changed"
     )
 
     # Constraints
@@ -109,15 +100,10 @@ class DocumentVersion(Base):
 
     # Relationships
     document: Mapped["Document"] = relationship(
-        "Document",
-        foreign_keys=[document_id],
-        back_populates="versions"
+        "Document", foreign_keys=[document_id], back_populates="versions"
     )
 
-    user: Mapped[Optional["User"]] = relationship(
-        "User",
-        foreign_keys=[changed_by]
-    )
+    user: Mapped[Optional["User"]] = relationship("User", foreign_keys=[changed_by])
 
     # Validators
     @validates("version")

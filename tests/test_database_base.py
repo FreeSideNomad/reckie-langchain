@@ -8,17 +8,19 @@ Tests:
 - Database connection and session management
 """
 
-import pytest
 from datetime import datetime
+
+import pytest
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.database.base import Base, TimestampMixin
-from src.database.connection import get_db, get_db_info, SessionLocal
+from src.database.connection import SessionLocal, get_db, get_db_info
 
 
 class TestModel(Base, TimestampMixin):
     """Test model for base class functionality."""
+
     __tablename__ = "test_models"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -70,8 +72,9 @@ class TestBaseModel:
 
     def test_repr_string_primary_key(self):
         """Test __repr__() handles string primary keys."""
-        from sqlalchemy import UUID as SQLUUID
         import uuid
+
+        from sqlalchemy import UUID as SQLUUID
 
         class TestUUIDModel(Base):
             __tablename__ = "test_uuid_models"

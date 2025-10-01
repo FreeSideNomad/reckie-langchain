@@ -14,12 +14,12 @@ Each type defines:
 - Additional configuration
 """
 
-from typing import Dict, List, Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List
 
-from sqlalchemy import String, Text, Integer, JSON
+from sqlalchemy import JSON, Integer, String, Text
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.database.base import Base, TimestampMixin
 
@@ -51,10 +51,7 @@ class DocumentType(Base, TimestampMixin):
 
     # Primary Key
     id: Mapped[int] = mapped_column(
-        Integer,
-        primary_key=True,
-        autoincrement=True,
-        comment="Auto-increment primary key"
+        Integer, primary_key=True, autoincrement=True, comment="Auto-increment primary key"
     )
 
     # Document Type Configuration
@@ -63,45 +60,32 @@ class DocumentType(Base, TimestampMixin):
         unique=True,
         nullable=False,
         index=True,
-        comment="Unique document type name (e.g., vision_document, user_story)"
+        comment="Unique document type name (e.g., vision_document, user_story)",
     )
 
     system_prompt: Mapped[str] = mapped_column(
-        Text,
-        nullable=False,
-        comment="AI system prompt for conversations about this document type"
+        Text, nullable=False, comment="AI system prompt for conversations about this document type"
     )
 
     workflow_steps: Mapped[Dict[str, Any]] = mapped_column(
-        JSONType,
-        nullable=False,
-        default=list,
-        comment="JSONB array of workflow step definitions"
+        JSONType, nullable=False, default=list, comment="JSONB array of workflow step definitions"
     )
 
     parent_types: Mapped[Dict[str, Any]] = mapped_column(
-        JSONType,
-        default=list,
-        comment="JSONB array of allowed parent document types"
+        JSONType, default=list, comment="JSONB array of allowed parent document types"
     )
 
     allowed_personas: Mapped[Dict[str, Any]] = mapped_column(
-        JSONType,
-        default=list,
-        comment="JSONB array of personas that can create this document type"
+        JSONType, default=list, comment="JSONB array of personas that can create this document type"
     )
 
     config: Mapped[Dict[str, Any]] = mapped_column(
-        JSONType,
-        default=dict,
-        comment="JSONB object for additional type-specific configuration"
+        JSONType, default=dict, comment="JSONB object for additional type-specific configuration"
     )
 
     # Relationships
     documents: Mapped[List["Document"]] = relationship(
-        "Document",
-        back_populates="type",
-        foreign_keys="[Document.document_type]"
+        "Document", back_populates="type", foreign_keys="[Document.document_type]"
     )
 
     # Hybrid Properties

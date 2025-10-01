@@ -8,6 +8,6 @@ Exports:
 """
 
 from src.database.base import Base
-from src.database.connection import engine, get_db, SessionLocal
+from src.database.connection import SessionLocal, engine, get_db
 
 __all__ = ["Base", "engine", "get_db", "SessionLocal"]
