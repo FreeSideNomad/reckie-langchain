@@ -440,7 +440,7 @@ class RelationshipService:
         # Fetch Document objects for each parent_id
         ancestors = []
         for row in rows:
-            parent_id_str = row[0]
+            parent_id_str = str(row[0])
             # Convert back to UUID format (add dashes)
             if len(parent_id_str) == 32:  # UUID without dashes
                 parent_id_formatted = (
@@ -518,7 +518,7 @@ class RelationshipService:
         # Fetch Document objects for each child_id
         descendants = []
         for row in rows:
-            child_id_str = row[0]
+            child_id_str = str(row[0])
             # Convert back to UUID format (add dashes)
             if len(child_id_str) == 32:  # UUID without dashes
                 child_id_formatted = (
