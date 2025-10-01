@@ -58,8 +58,7 @@ jobs:
           pip install -r requirements-dev.txt
 
       - name: Run mypy (type checking)
-        run: mypy src/api/ src/database/ src/services/ --install-types --non-interactive || true
-        # TODO: Fix type errors in mock_adapters (Issue #68)
+        run: mypy src/api/ src/database/ src/services/ --install-types --non-interactive
 
   test:
     name: Unit Tests & Coverage
