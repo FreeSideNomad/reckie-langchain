@@ -92,9 +92,9 @@ class TestE2EDocumentHierarchy:
             f"/api/v1/relationships/documents/{feature_id}/breadcrumb"
         )
         assert breadcrumb_response.status_code == 200
-        breadcrumb = breadcrumb_response.json()["breadcrumb"]
-        assert "Product Vision 2024" in breadcrumb
-        assert "User Authentication" in breadcrumb
+        breadcrumb_string = breadcrumb_response.json()["breadcrumb_string"]
+        assert "Product Vision 2024" in breadcrumb_string
+        assert "User Authentication" in breadcrumb_string
 
         # Assert: Verify parent context (for RAG)
         context_response = api_client.get(f"/api/v1/relationships/documents/{feature_id}/context")
@@ -234,9 +234,9 @@ class TestE2EDocumentHierarchy:
 
         # Assert: Breadcrumb correct and performant
         assert breadcrumb_response.status_code == 200
-        breadcrumb = breadcrumb_response.json()["breadcrumb"]
-        assert "Level 1 Document" in breadcrumb
-        assert "Level 5 Document" in breadcrumb
+        breadcrumb_string = breadcrumb_response.json()["breadcrumb_string"]
+        assert "Level 1 Document" in breadcrumb_string
+        assert "Level 5 Document" in breadcrumb_string
         assert elapsed_ms < 50, f"Breadcrumb took {elapsed_ms}ms, expected < 50ms"
 
 
@@ -476,7 +476,7 @@ class TestE2ECascadeOperations:
 
         # Act: Delete parent document
         delete_response = api_client.delete(f"/api/v1/documents/{doc1_id}")
-        assert delete_response.status_code == 200
+        assert delete_response.status_code == 204
 
         # Assert: Child document still exists
         child_response = api_client.get(f"/api/v1/documents/{doc2_id}")
@@ -564,10 +564,10 @@ class TestE2ESearchAndFilters:
 
         # Assert: Correct documents returned
         assert search_response.status_code == 200
-        documents = search_response.json()["documents"]
-        assert len(documents) == 2
-        assert all(doc["document_type"] == "type1" for doc in documents)
-        assert all(doc["status"] == "draft" for doc in documents)
+        items = search_response.json()["items"]
+        assert len(items) == 2
+        assert all(doc["document_type"] == "type1" for doc in items)
+        assert all(doc["status"] == "draft" for doc in items)
 
 
 class TestE2EFullWorkflow:
@@ -697,11 +697,11 @@ class TestE2EFullWorkflow:
             f"/api/v1/relationships/documents/{story['id']}/breadcrumb"
         )
         assert breadcrumb_response.status_code == 200
-        breadcrumb = breadcrumb_response.json()["breadcrumb"]
-        assert "Product Vision" in breadcrumb
-        assert "User Management" in breadcrumb
-        assert "Authentication" in breadcrumb
-        assert "Login Page" in breadcrumb
+        breadcrumb_string = breadcrumb_response.json()["breadcrumb_string"]
+        assert "Product Vision" in breadcrumb_string
+        assert "User Management" in breadcrumb_string
+        assert "Authentication" in breadcrumb_string
+        assert "Login Page" in breadcrumb_string
 
         # Assert: Verify descendants from Vision
         descendants_response = api_client.get(
