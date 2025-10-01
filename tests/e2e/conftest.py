@@ -13,7 +13,7 @@ tests will be skipped automatically.
 import docker
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from testcontainers.postgres import PostgresContainer
 
@@ -51,8 +51,13 @@ def postgres_container():
         # Wait for container to be ready
         postgres.get_connection_url()  # This blocks until ready
 
-        # Run migrations
+        # Enable pgvector extension before running migrations
         engine = create_engine(postgres.get_connection_url())
+        with engine.connect() as conn:
+            conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+            conn.commit()
+
+        # Run migrations
         Base.metadata.create_all(engine)
         engine.dispose()
 
