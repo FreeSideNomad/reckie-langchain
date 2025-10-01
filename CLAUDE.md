@@ -786,3 +786,465 @@ docker-compose up -d postgres
 
 **Added**: 2025-10-01
 **Status**: Active ✅
+
+---
+
+# E2E Testing Strategy with Testcontainers
+
+## Overview
+
+This section documents the E2E testing strategy using Testcontainers-Python for REST API testing with full PostgreSQL + pgvector stack. This approach follows the **Testing Pyramid** principle to balance test coverage, execution speed, and realistic integration testing.
+
+## Testing Pyramid Principle
+
+### Distribution Target
+
+```
+      /\
+     /E2E\      ~10 tests  - Critical user journeys only (3%)
+    /------\
+   /Integr-\   ~90 tests  - Service layer + SQLite (30%)
+  /----------\
+ /   Unit    \ ~200 tests - Business logic, validation (67%)
+/-------------\
+
+Total: ~300 tests
+```
+
+### Key Principles
+
+1. **Unit Tests (67%)**: Fast, isolated tests of business logic
+   - Pure functions, validators, utilities
+   - No database or external dependencies
+   - Microsecond execution time
+   - Written for every new function/method
+
+2. **Integration Tests (30%)**: Service layer tests with SQLite
+   - Test service methods with in-memory database
+   - Fast execution (~2-3 seconds for all tests)
+   - Comprehensive coverage of business logic
+   - Use existing `tests/test_*.py` structure
+
+3. **E2E Tests (3%)**: Full stack tests with real infrastructure
+   - FastAPI + PostgreSQL + pgvector in Docker containers
+   - Test critical user journeys end-to-end
+   - Catch integration issues SQLite tests miss
+   - Slower execution (~30-60 seconds total)
+   - **MINIMAL COUNT**: Only ~10 tests for highest-value scenarios
+
+## Why Testcontainers?
+
+### Problem with SQLite-Only Testing
+
+Integration tests use SQLite for speed, but this creates gaps:
+- Missing PostgreSQL-specific features (recursive CTEs, JSONB operators)
+- No pgvector extension testing
+- Different SQL dialects may cause production issues
+- No realistic network/connection testing
+
+### Solution: E2E Tests with Testcontainers
+
+**Testcontainers-Python** provides:
+- Programmatic Docker container management
+- Automatic cleanup after tests
+- Session-scoped fixtures for performance
+- CI/CD friendly (Docker-in-Docker support)
+- Full PostgreSQL + pgvector stack for realistic testing
+
+### Alternative Considered: pytest-docker-compose
+
+We chose Testcontainers over pytest-docker-compose because:
+- Better programmatic control over container lifecycle
+- Easier isolation between test runs
+- More flexible fixture architecture
+- Better documentation and community support
+
+## Implementation Architecture
+
+### Project Structure
+
+```
+src/
+├── api/
+│   ├── main.py                 # FastAPI app
+│   ├── dependencies.py         # Dependency injection (get_db)
+│   └── v1/
+│       ├── documents.py        # Document endpoints
+│       ├── relationships.py    # Relationship endpoints
+│       └── models/
+│           ├── document.py     # Pydantic request/response models
+│           └── relationship.py
+
+tests/
+├── unit/                       # Pure functions, utilities
+├── integration/                # Service + SQLite (current tests)
+│   ├── test_relationship_service.py
+│   └── test_hierarchy_traversal.py
+└── e2e/                        # Full stack + Testcontainers
+    ├── conftest.py            # Container fixtures
+    ├── test_e2e_documents.py
+    └── test_e2e_workflows.py
+```
+
+### Testcontainers Setup (tests/e2e/conftest.py)
+
+```python
+import pytest
+from testcontainers.postgres import PostgresContainer
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from src.api.main import app
+from src.api.dependencies import get_db
+from src.database.base import Base
+
+@pytest.fixture(scope="session")
+def postgres_container():
+    """Start PostgreSQL + pgvector container for entire test session."""
+    with PostgresContainer("pgvector/pgvector:pg15") as postgres:
+        # Run migrations
+        engine = create_engine(postgres.get_connection_url())
+        Base.metadata.create_all(engine)
+        yield postgres
+
+@pytest.fixture
+def test_db(postgres_container):
+    """Create database session for each test."""
+    engine = create_engine(postgres_container.get_connection_url())
+    SessionLocal = sessionmaker(bind=engine)
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.rollback()  # Rollback changes after test
+        db.close()
+
+@pytest.fixture
+def api_client(test_db):
+    """Create FastAPI test client with test database."""
+    def override_get_db():
+        try:
+            yield test_db
+        finally:
+            pass
+
+    app.dependency_overrides[get_db] = override_get_db
+    return TestClient(app)
+```
+
+### E2E Test Example
+
+```python
+# tests/e2e/test_e2e_workflows.py
+def test_e2e_create_document_hierarchy(api_client, test_db):
+    """
+    E2E: Create full hierarchy and verify all relationships.
+
+    Critical path covering:
+    - Document creation via API
+    - Relationship creation
+    - Breadcrumb generation
+    - Parent context aggregation
+    """
+    # Create Vision via API
+    vision_response = api_client.post("/api/v1/documents", json={
+        "user_id": str(uuid.uuid4()),
+        "document_type": "vision_document",
+        "title": "Product Vision 2024",
+        "content_markdown": "Our vision is to..."
+    })
+    assert vision_response.status_code == 201
+    vision_id = vision_response.json()["id"]
+
+    # Create Feature under Vision
+    feature_response = api_client.post("/api/v1/documents", json={
+        "user_id": str(uuid.uuid4()),
+        "document_type": "feature_document",
+        "title": "User Authentication",
+        "content_markdown": "This feature provides..."
+    })
+    feature_id = feature_response.json()["id"]
+
+    # Create relationship via API
+    rel_response = api_client.post("/api/v1/relationships", json={
+        "parent_id": vision_id,
+        "child_id": feature_id
+    })
+    assert rel_response.status_code == 201
+
+    # Verify breadcrumb via API
+    breadcrumb = api_client.get(f"/api/v1/documents/{feature_id}/breadcrumb")
+    assert "Product Vision 2024" in breadcrumb.json()["breadcrumb"]
+
+    # Verify parent context (for RAG)
+    context = api_client.get(f"/api/v1/documents/{feature_id}/context")
+    assert "Our vision is to" in context.json()["context"]
+```
+
+## E2E Test Coverage (~10 Tests)
+
+### Critical User Journeys
+
+1. **test_e2e_create_document_hierarchy** - Full CRUD flow
+2. **test_e2e_ripple_effect_propagation** - Update parent, verify descendants marked
+3. **test_e2e_breadcrumb_navigation** - Deep hierarchy breadcrumb generation
+4. **test_e2e_relationship_validation** - Circular dependency prevention
+5. **test_e2e_parent_context_aggregation** - RAG context retrieval
+6. **test_e2e_concurrent_updates** - Race condition handling
+7. **test_e2e_large_document_performance** - Performance baseline
+8. **test_e2e_cascade_delete** - Relationship deletion behavior
+9. **test_e2e_search_filters** - Document search with filters
+10. **test_e2e_full_workflow** - Vision → Feature → Epic → Story
+
+### Performance Baselines
+
+E2E tests establish performance expectations:
+- Document creation: < 100ms
+- Hierarchy traversal (10 levels): < 200ms
+- Parent context aggregation: < 300ms
+- Breadcrumb generation: < 50ms
+- Full workflow (Vision → Story): < 1s
+
+## CI/CD Integration
+
+### GitHub Actions Configuration
+
+```yaml
+# .github/workflows/ci.yml
+
+jobs:
+  test:
+    name: Unit Tests & Coverage
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg15
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Run integration tests (SQLite)
+        run: pytest tests/integration/ --cov=src
+
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [test]  # Run after unit/integration tests pass
+
+    steps:
+      - name: Set up Docker for Testcontainers
+        run: docker info
+
+      - name: Run E2E tests with Testcontainers
+        run: pytest tests/e2e/ -v --tb=short
+
+      - name: Upload performance metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-performance
+          path: e2e-metrics.json
+```
+
+### Test Execution Strategy
+
+1. **Run integration tests first** (fast, comprehensive)
+2. **Only run E2E if integration passes** (fail fast)
+3. **Allow E2E to be skipped on draft PRs** (optional flag)
+4. **Track E2E performance metrics over time** (regression detection)
+
+## FastAPI Endpoint Pattern
+
+### Document CRUD Endpoint Example
+
+```python
+# src/api/v1/documents.py
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from src.api.dependencies import get_db
+from src.services.document_service import DocumentService
+from src.api.v1.models.document import DocumentCreate, DocumentResponse
+
+router = APIRouter(prefix="/api/v1/documents", tags=["documents"])
+
+@router.post("/", response_model=DocumentResponse, status_code=201)
+def create_document(
+    document: DocumentCreate,
+    db: Session = Depends(get_db)
+):
+    service = DocumentService(db)
+    doc = service.create_document(
+        user_id=document.user_id,
+        document_type=document.document_type,
+        title=document.title,
+        content_markdown=document.content_markdown
+    )
+    return doc
+
+@router.get("/{document_id}", response_model=DocumentResponse)
+def get_document(document_id: str, db: Session = Depends(get_db)):
+    service = DocumentService(db)
+    doc = service.get_document(uuid.UUID(document_id))
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    return doc
+```
+
+### Dependency Injection (src/api/dependencies.py)
+
+```python
+from sqlalchemy.orm import Session
+from src.database.base import SessionLocal
+
+def get_db():
+    """Database session dependency for FastAPI."""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+```
+
+## Best Practices
+
+### When to Write E2E Tests
+
+✅ **DO write E2E tests for:**
+- Critical user workflows (document creation → relationship → retrieval)
+- Integration points between major components
+- Features requiring PostgreSQL-specific functionality
+- Performance-critical operations
+- Security-sensitive endpoints (authentication, authorization)
+
+❌ **DON'T write E2E tests for:**
+- Edge cases (use integration tests instead)
+- Input validation (use unit tests)
+- Error handling (use integration tests)
+- Business logic (use unit tests)
+- Individual service methods (use integration tests)
+
+### Test Data Management
+
+```python
+# Use fixtures for common test data
+@pytest.fixture
+def sample_documents(api_client):
+    """Create standard document hierarchy for testing."""
+    vision = api_client.post("/api/v1/documents", json={...}).json()
+    feature = api_client.post("/api/v1/documents", json={...}).json()
+    return {"vision": vision, "feature": feature}
+
+# Each test should clean up after itself (use test_db fixture with rollback)
+```
+
+### Performance Optimization
+
+1. **Session-scoped container**: Start PostgreSQL once per test session
+2. **Transaction rollback**: Rollback database changes after each test
+3. **Parallel execution**: Run E2E tests in parallel when possible
+4. **Selective execution**: Skip E2E on draft PRs with flag
+
+## Troubleshooting
+
+### Container startup fails in CI
+
+```yaml
+# Ensure Docker-in-Docker is available
+steps:
+  - name: Set up Docker
+    run: docker info
+```
+
+### Tests are flaky
+
+```python
+# Use proper wait strategies
+from testcontainers.core.waiting_utils import wait_for_logs
+
+@pytest.fixture(scope="session")
+def postgres_container():
+    with PostgresContainer("pgvector/pgvector:pg15") as postgres:
+        wait_for_logs(postgres, "database system is ready to accept connections")
+        yield postgres
+```
+
+### Database state persists between tests
+
+```python
+# Ensure proper rollback in test_db fixture
+@pytest.fixture
+def test_db(postgres_container):
+    engine = create_engine(postgres_container.get_connection_url())
+    SessionLocal = sessionmaker(bind=engine)
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.rollback()  # Critical: rollback changes
+        db.close()
+```
+
+## Migration from SQLite-Only Testing
+
+### Before (All SQLite)
+
+```python
+tests/
+├── test_document_service.py
+├── test_relationship_service.py
+└── test_hierarchy_traversal.py
+```
+
+### After (Pyramid Structure)
+
+```python
+tests/
+├── unit/                          # New: Pure functions
+│   ├── test_validators.py
+│   └── test_formatters.py
+├── integration/                   # Keep existing
+│   ├── test_document_service.py
+│   ├── test_relationship_service.py
+│   └── test_hierarchy_traversal.py
+└── e2e/                          # New: Full stack
+    ├── conftest.py
+    ├── test_e2e_workflows.py
+    └── test_e2e_performance.py
+```
+
+### Migration Steps
+
+1. **Keep all existing integration tests** - They're valuable and fast
+2. **Add E2E tests gradually** - Start with 1-2 critical paths
+3. **Extract pure functions to unit tests** - As you refactor
+4. **Monitor test execution time** - Adjust pyramid if E2E gets too slow
+
+## Summary
+
+### Key Takeaways
+
+1. **Follow the pyramid**: 67% unit, 30% integration, 3% E2E
+2. **E2E tests are expensive**: Keep count minimal (~10 tests)
+3. **Use Testcontainers for realism**: Full PostgreSQL + pgvector stack
+4. **Integration tests are your workhorse**: Fast + comprehensive
+5. **CI/CD runs E2E separately**: Fail fast on integration tests first
+
+### Resources
+
+- **Testcontainers Python**: https://testcontainers-python.readthedocs.io/
+- **FastAPI Testing**: https://fastapi.tiangolo.com/tutorial/testing/
+- **Testing Pyramid**: https://martinfowler.com/articles/practical-test-pyramid.html
+
+---
+
+**Added**: 2025-10-01
+**Status**: Active ✅
