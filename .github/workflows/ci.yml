@@ -97,6 +97,7 @@ jobs:
       - name: Run tests with coverage
         env:
           DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+          USE_MOCK_ADAPTERS: true
         run: |
           pytest \
             --cov=src \

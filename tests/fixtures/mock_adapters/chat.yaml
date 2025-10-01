@@ -1,0 +1,39 @@
+completions:
+- key: 4908f158
+  prompt: Say hello in a friendly way
+  response: Hello there! How are you doing today?
+  recorded_at: '2025-10-01T15:02:34.036017'
+- key: 71de34ec
+  prompt: Explain what a mock adapter is in one sentence
+  response: A mock adapter is a simulated version of a hardware or software component
+    used for testing purposes in order to mimic the behavior of the actual component.
+  recorded_at: '2025-10-01T15:02:35.471567'
+- key: 45e8c1cc
+  prompt: What are the benefits of testing without API costs?
+  response: '1. Cost savings: By testing without API costs, companies can save money
+    on expensive API usage fees, especially for high-volume testing or large-scale
+    projects.
+
+
+    2. Flexibility: Without API costs, companies have the flexibility to run tests
+    as frequently as needed without worrying about exceeding budget constraints.
+
+
+    3. Faster development cycles: Testing without API costs allows for quicker iterations
+    and faster development cycles, as teams can test more frequently without incurring
+    additional expenses.
+
+
+    4. Improved quality: With the ability to test more frequently and thoroughly without
+    API costs, companies can ensure higher quality software and catch bugs earlier
+    in the development process.
+
+
+    5. Increased innovation: Without the constraints of API costs, teams can experiment
+    with new ideas and technologies more freely, leading to increased innovation and
+    creativity in their projects.'
+  recorded_at: '2025-10-01T15:02:37.376392'
+metadata:
+  recorded_at: null
+  total_count: 3
+  last_updated: '2025-10-01T15:02:37.376405'
