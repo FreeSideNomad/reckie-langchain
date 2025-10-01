@@ -88,9 +88,8 @@ def test_fixture_lookup_by_text():
     """Test that fixtures can be looked up by exact text match."""
     embeddings = MockEmbeddings()
 
-    # Try to embed text that might be in fixtures
-    # (This will use hash fallback if not in fixtures)
-    vector = embeddings.embed_query("This is a test document")
+    # Use text that's NOT in fixtures to test hash fallback
+    vector = embeddings.embed_query("Text not in fixtures - should use hash fallback")
 
     assert len(vector) == 1536
     # Should work regardless of whether fixture exists

@@ -120,6 +120,7 @@ omit = [
     "*/test_*",
     "*/__pycache__/*",
     "*/site-packages/*",
+    "*/testing/mock_adapters/*",
 ]
 
 [tool.coverage.report]
