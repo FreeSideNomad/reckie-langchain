@@ -1,0 +1,203 @@
+name: User Story
+description: Create a new user story for implementation
+title: "[US] "
+labels: ["user-story", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## User Story Template
+        Create a detailed user story ready for implementation.
+
+  - type: input
+    id: story-id
+    attributes:
+      label: Story ID
+      description: Unique identifier (e.g., F1-E1-S1)
+      placeholder: "F1-E1-S1"
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-story
+    attributes:
+      label: User Story
+      description: "As a [role], I want [capability], so that [benefit]"
+      placeholder: |
+        As a developer
+        I want a docker-compose.yml file with PostgreSQL configuration
+        So that I can start the database with one command
+    validations:
+      required: true
+
+  - type: input
+    id: parent-epic
+    attributes:
+      label: Parent Epic
+      description: Link to parent epic issue
+      placeholder: "#123"
+    validations:
+      required: true
+
+  - type: input
+    id: parent-feature
+    attributes:
+      label: Parent Feature
+      description: Link to parent feature issue
+      placeholder: "#100"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: story-points
+    attributes:
+      label: Story Points
+      description: Estimation using Fibonacci sequence
+      options:
+        - "1"
+        - "2"
+        - "3"
+        - "5"
+        - "8"
+        - "13"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: sprint
+    attributes:
+      label: Sprint
+      description: Target sprint for implementation
+      options:
+        - Sprint 1
+        - Sprint 2
+        - Sprint 3
+        - Sprint 4
+        - Sprint 5
+        - Sprint 6
+        - Backlog
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Detailed checklist of requirements (one per line)
+      placeholder: |
+        - [ ] AC1: File docker-compose.yml created in project root
+        - [ ] AC2: PostgreSQL service configured with pgvector image
+        - [ ] AC3: Port mapping configured (5432:5432)
+        - [ ] AC4: Environment variables loaded from .env
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation-details
+    attributes:
+      label: Implementation Details
+      description: Technical details, file locations, code snippets
+      placeholder: |
+        **File Location:** `docker-compose.yml`
+
+        **Key Components:**
+        - PostgreSQL 15 with pgvector
+        - Volume mounts for data persistence
+        - Health checks configured
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: testing-checklist
+    attributes:
+      label: Testing Checklist
+      description: Manual and automated testing requirements
+      placeholder: |
+        **Manual Testing:**
+        - [ ] Run `docker-compose up -d`
+        - [ ] Verify container status is "healthy"
+        - [ ] Connect with psql
+
+        **Integration Testing:**
+        - [ ] Container becomes healthy within 30 seconds
+        - [ ] Environment variables passed correctly
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: definition-of-done
+    attributes:
+      label: Definition of Done
+      description: Checklist for story completion
+      placeholder: |
+        - [ ] All acceptance criteria met
+        - [ ] Code reviewed by peer
+        - [ ] Tests passing
+        - [ ] Documentation updated
+        - [ ] Merged to main branch
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Blocked by / Blocks other stories
+      placeholder: |
+        **Blocked By:** None
+        **Blocks:** #124, #125
+      render: markdown
+    validations:
+      required: false
+
+  - type: input
+    id: estimated-hours
+    attributes:
+      label: Estimated Hours
+      description: Time estimate in hours
+      placeholder: "4-6"
+    validations:
+      required: false
+
+  - type: textarea
+    id: sub-tasks
+    attributes:
+      label: Sub-Tasks
+      description: Developer checklist of implementation steps
+      placeholder: |
+        - [ ] Create docker-compose.yml file
+        - [ ] Define postgres service
+        - [ ] Configure environment variables
+        - [ ] Set up volume mounts
+        - [ ] Add health check
+        - [ ] Test setup
+        - [ ] Update .gitignore
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks & Mitigations
+      description: Potential risks and how to address them
+      placeholder: |
+        | Risk | Probability | Impact | Mitigation |
+        |------|------------|--------|------------|
+        | Port 5432 already in use | Medium | Low | Document port change in .env |
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional Notes
+      description: Any other relevant information
+      render: markdown
+    validations:
+      required: false

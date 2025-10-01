@@ -1,0 +1,275 @@
+name: Epic
+description: Create a new epic document
+title: "[Epic] "
+labels: ["epic", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Epic Template
+        Create a detailed epic specification for a feature.
+
+  - type: input
+    id: epic-id
+    attributes:
+      label: Epic ID
+      description: Unique identifier (e.g., F1-E1, F1-E2)
+      placeholder: "F1-E1"
+    validations:
+      required: true
+
+  - type: input
+    id: epic-name
+    attributes:
+      label: Epic Name
+      description: Short, descriptive name
+      placeholder: "Docker & PostgreSQL Setup"
+    validations:
+      required: true
+
+  - type: input
+    id: parent-feature
+    attributes:
+      label: Parent Feature
+      description: Link to parent feature issue
+      placeholder: "#100"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: Epic priority level
+      options:
+        - "P0 (Blocker)"
+        - "P1 (High)"
+        - "P2 (Medium)"
+        - "P3 (Low)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: sprint
+    attributes:
+      label: Sprint
+      description: Target sprint for implementation
+      options:
+        - Sprint 1
+        - Sprint 2
+        - Sprint 3
+        - Sprint 4
+        - Sprint 5
+        - Sprint 6
+        - Backlog
+    validations:
+      required: true
+
+  - type: input
+    id: story-points
+    attributes:
+      label: Story Points
+      description: Total estimate for epic
+      placeholder: "5"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Detailed epic description
+      placeholder: |
+        Set up local development environment using Docker Compose with PostgreSQL 15+ and pgvector extension.
+        Create configuration files, environment templates, initialization scripts, and documentation for developers
+        to quickly spin up the database locally.
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: business-value
+    attributes:
+      label: Business Value
+      description: Why this epic matters
+      placeholder: |
+        - **Developer Productivity:** One-command database setup (`docker-compose up`)
+        - **Consistency:** All developers use identical database configuration
+        - **Onboarding:** New team members can start in minutes
+        - **CI/CD Foundation:** Same Docker setup usable in testing/staging
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Detailed acceptance criteria for the epic
+      placeholder: |
+        ### AC1: Docker Compose File
+        - [ ] `docker-compose.yml` in project root
+        - [ ] PostgreSQL 15+ service defined
+        - [ ] Port mapping: 5432:5432
+        - [ ] Volume mount for data persistence
+        - [ ] Environment variables loaded from `.env` file
+
+        ### AC2: PostgreSQL Configuration
+        - [ ] Database name: `langchain_docs` (configurable)
+        - [ ] User/password from environment variables
+        - [ ] UTF-8 encoding
+        - [ ] Timezone: UTC
+
+        ### AC3: pgvector Extension
+        - [ ] PostgreSQL image with pgvector support
+        - [ ] Extension installation script in `scripts/init_db.sql`
+        - [ ] Script executed on container initialization
+
+        ### AC4: Environment Configuration
+        - [ ] `.env.example` file with template variables
+        - [ ] `.env` file gitignored
+        - [ ] README instructions to copy `.env.example` to `.env`
+
+        ### AC5: Health Checks
+        - [ ] Healthcheck defined in docker-compose.yml
+        - [ ] Container reports healthy status within 30 seconds
+
+        ### AC6: Documentation
+        - [ ] README.md section: "Local Development Setup"
+        - [ ] Step-by-step setup instructions
+        - [ ] Troubleshooting section
+
+        ### AC7: Testing
+        - [ ] `docker-compose up` starts successfully
+        - [ ] Can connect via psql from host
+        - [ ] pgvector extension verified installed
+        - [ ] Data persists after restart
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-stories
+    attributes:
+      label: User Stories
+      description: List of user stories for this epic (links to story issues)
+      placeholder: |
+        - [ ] #200 US-F1-E1-S1: Docker Compose File Creation (2 SP)
+        - [ ] #201 US-F1-E1-S2: pgvector Extension Installation (1 SP)
+        - [ ] #202 US-F1-E1-S3: Environment Configuration (1 SP)
+        - [ ] #203 US-F1-E1-S4: Health Checks Configuration (1 SP)
+        - [ ] #204 US-F1-E1-S5: Setup Documentation (1 SP)
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: technical-design
+    attributes:
+      label: Technical Design
+      description: Architecture and implementation details
+      placeholder: |
+        ### File Structure
+        ```
+        langchain-demo/
+        ├── docker-compose.yml
+        ├── .env.example
+        ├── .env                    # gitignored
+        ├── scripts/
+        │   └── init_db.sql
+        └── postgres_data/          # gitignored
+        ```
+
+        ### Docker Compose Configuration
+        - Image: `pgvector/pgvector:pg15`
+        - Network: bridge
+        - Restart policy: unless-stopped
+        - Health check: pg_isready command
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Blocked by / Blocks other epics
+      placeholder: |
+        **Blocked By:** None (foundational)
+        **Blocks:**
+        - Epic F1-E2: Database Schema Design
+        - Epic F1-E3: Database Migrations
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: testing-strategy
+    attributes:
+      label: Testing Strategy
+      description: How this epic will be tested
+      placeholder: |
+        ### Manual Testing
+        - [ ] Run `docker-compose up -d`
+        - [ ] Verify container status: `docker-compose ps`
+        - [ ] Connect via psql
+        - [ ] Check extensions: `\dx`
+        - [ ] Test data persistence
+
+        ### Automated Testing
+        - [ ] CI pipeline test: Docker Compose starts successfully
+        - [ ] Health check passes within 30 seconds
+        - [ ] Extension verification query succeeds
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: definition-of-done
+    attributes:
+      label: Definition of Done
+      description: Checklist for epic completion
+      placeholder: |
+        - [ ] All acceptance criteria met
+        - [ ] All user stories completed
+        - [ ] Documentation reviewed and clear
+        - [ ] Manual testing passed
+        - [ ] Code reviewed
+        - [ ] No blockers for dependent epics
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks & Mitigations
+      description: Potential risks and mitigation strategies
+      placeholder: |
+        | Risk | Impact | Probability | Mitigation |
+        |------|--------|-------------|------------|
+        | pgvector image incompatible with M1 Macs | Medium | Low | Test on ARM architecture |
+        | Port 5432 already in use | Low | Medium | Document how to change port in .env |
+        | Volume permissions issues | Low | Medium | Document permission fixes for different OSes |
+      render: markdown
+    validations:
+      required: false
+
+  - type: input
+    id: estimated-effort
+    attributes:
+      label: Estimated Effort
+      description: Time estimate in hours
+      placeholder: "8-12 hours"
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional Notes
+      description: Any other relevant information
+      render: markdown
+    validations:
+      required: false

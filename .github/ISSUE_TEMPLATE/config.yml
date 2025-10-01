@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📖 Project Wiki
+    url: https://github.com/FreeSideNomad/reckie-langchain/wiki
+    about: View project documentation, planning, and specifications
+  - name: 💬 Discussions
+    url: https://github.com/FreeSideNomad/reckie-langchain/discussions
+    about: Ask questions and discuss ideas with the community
