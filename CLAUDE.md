@@ -637,7 +637,11 @@ langchain-demo/
 ├── src/                           # Source code
 │   └── ...
 ├── tests/                         # Unit tests
-│   └── ...
+│   ├── unit/                  # Pure functions, utilities
+│   ├── integration/           # Service + SQLite tests
+│   └── e2e/                   # Full stack + Testcontainers
+│       ├── conftest.py        # PostgreSQL container fixtures
+│       └── test_e2e_*.py      # E2E test files
 ├── scripts/                       # Utility scripts
 │   └── ...
 ├── wiki/                          # Documentation (git submodule)
@@ -889,8 +893,11 @@ isort src/ tests/
 # Check types
 mypy src/ --install-types --non-interactive
 
-# Run tests
-pytest --cov=src --cov-fail-under=85 -v
+# Run tests (integration only - fast)
+pytest tests/integration/ --cov=src --cov-fail-under=85 -v
+
+# Run E2E tests (requires Docker)
+pytest tests/e2e/ -v
 ```
 
 ## Benefits
@@ -921,6 +928,28 @@ echo $DATABASE_URL
 # Ensure database is running
 docker-compose up -d postgres
 ```
+
+### E2E tests are skipped
+
+E2E tests require Docker to be running. If you see:
+
+```
+SKIPPED [6] tests/e2e/conftest.py:36: Docker is not available - E2E tests require Docker to be running
+```
+
+**Solution**: Start Docker Desktop or Docker daemon:
+
+```bash
+# macOS/Windows: Start Docker Desktop application
+
+# Linux: Start Docker service
+sudo systemctl start docker
+
+# Verify Docker is running
+docker ps
+```
+
+**Note**: E2E tests are optional during local development. They will run in CI/CD where Docker is always available.
 
 ---
 
@@ -1332,6 +1361,18 @@ def test_db(postgres_container):
         db.rollback()  # Critical: rollback changes
         db.close()
 ```
+
+### Docker is not available error
+
+If you see `docker.errors.DockerException: Error while fetching server API version`, Docker is not running.
+
+**Solution**: E2E tests automatically skip when Docker is unavailable. No action required. To run E2E tests:
+
+1. Start Docker Desktop (macOS/Windows) or Docker service (Linux)
+2. Verify with `docker ps`
+3. Run `pytest tests/e2e/ -v`
+
+The tests use `pytest.mark.skipif` to gracefully skip when Docker is not detected.
 
 ## Migration from SQLite-Only Testing
 
