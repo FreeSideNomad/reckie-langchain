@@ -175,7 +175,7 @@ class TestE2EDocumentHierarchy:
         # Assert: Child document should be marked
         child_doc = test_db.query(Document).filter(Document.id == uuid.UUID(child_id)).first()
         assert child_doc is not None
-        assert child_doc.metadata.get("needs_review") is True
+        assert child_doc.doc_metadata.get("needs_review") is True
 
     def test_e2e_breadcrumb_navigation(self, api_client, test_db):
         """
