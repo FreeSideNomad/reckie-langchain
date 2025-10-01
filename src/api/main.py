@@ -10,6 +10,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from src.api.dependencies import get_db
 from src.api.v1.routes.documents import router as documents_router
+from src.api.v1.routes.relationships import router as relationships_router
 
 # Create FastAPI app
 app = FastAPI(
@@ -31,6 +32,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(documents_router, prefix="/api/v1")
+app.include_router(relationships_router, prefix="/api/v1")
 
 
 # Exception handlers

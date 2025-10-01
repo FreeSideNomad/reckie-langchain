@@ -649,7 +649,7 @@ class RelationshipService:
 
     def mark_descendants_for_review(
         self, document_id: uuid.UUID, max_depth: Optional[int] = None
-    ) -> int:
+    ) -> list[uuid.UUID]:
         """
         Mark all descendant documents for review after parent change.
 
@@ -661,19 +661,19 @@ class RelationshipService:
             max_depth: Maximum depth to propagate (None = unlimited)
 
         Returns:
-            Number of descendants marked for review
+            List of document IDs that were marked for review
 
         Example:
-            count = service.mark_descendants_for_review(vision_id)
-            # Returns: 15 (all features, epics, stories marked)
+            marked_ids = service.mark_descendants_for_review(vision_id)
+            # Returns: [feature1_id, feature2_id, epic1_id, ...]
         """
         from datetime import datetime, timezone
 
         # Get all descendants
         descendants = self.get_descendants(document_id, max_depth=max_depth)
 
-        # Mark each descendant
-        marked_count = 0
+        # Mark each descendant and track IDs
+        marked_ids = []
         for doc, _, depth in descendants:
             # Update metadata
             if doc.doc_metadata is None:
@@ -691,12 +691,12 @@ class RelationshipService:
 
             flag_modified(doc, "doc_metadata")
 
-            marked_count += 1
+            marked_ids.append(doc.id)
 
         # Commit changes
         self.db.commit()
 
-        return marked_count
+        return marked_ids
 
     def get_parent_context(self, document_id: uuid.UUID, max_chars_per_parent: int = 2000) -> str:
         """
