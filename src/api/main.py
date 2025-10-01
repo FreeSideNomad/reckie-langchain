@@ -1,5 +1,7 @@
 """FastAPI application entry point."""
 
+from typing import Union
+
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -74,8 +76,8 @@ def health_check() -> dict:
 
 
 # Database health check
-@app.get("/health/db", tags=["health"])
-def health_check_db():
+@app.get("/health/db", tags=["health"], response_model=None)
+def health_check_db() -> Union[dict, JSONResponse]:
     """
     Database health check endpoint.
 
