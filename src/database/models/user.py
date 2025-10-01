@@ -9,7 +9,7 @@ Represents users in the system with different roles:
 """
 
 import uuid
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Any, List
 
 from sqlalchemy import String, event
 from sqlalchemy.dialects.postgresql import UUID as SQLUUID
@@ -126,7 +126,7 @@ class User(Base, TimestampMixin):
 
 # Event listener to ensure email is always lowercase
 @event.listens_for(User.email, "set", retval=True)
-def lowercase_email(target, value, oldvalue, initiator):
+def lowercase_email(target: Any, value: Any, oldvalue: Any, initiator: Any) -> Any:
     """Ensure email is always stored in lowercase."""
     if value is not None:
         return value.lower()

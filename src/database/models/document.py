@@ -275,4 +275,7 @@ class Document(Base, TimestampMixin):
 
     def __repr__(self) -> str:
         """String representation showing title and type."""
-        return f"Document(id={self.id}, title='{self.title}', type='{self.document_type}', status='{self.status}')"
+        return (
+            f"Document(id={self.id}, title='{self.title}', "
+            f"type='{self.document_type}', status='{self.status}')"
+        )

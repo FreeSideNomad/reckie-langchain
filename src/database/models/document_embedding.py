@@ -11,8 +11,8 @@ Stores vector embeddings for RAG-powered context retrieval:
 import uuid
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from pgvector.sqlalchemy import Vector
-from sqlalchemy import JSON, CheckConstraint, ForeignKey, Integer, String, Text, UniqueConstraint
+from pgvector.sqlalchemy import Vector  # type: ignore
+from sqlalchemy import JSON, CheckConstraint, ForeignKey, Integer, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as SQLUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates

@@ -64,7 +64,7 @@ class Base(DeclarativeBase):
             repr(user)  # "User(id=1, username='john')"
         """
         # Get primary key columns
-        pk_columns = [col.name for col in self.__table__.primary_key.columns]
+        pk_columns = [col.name for col in self.__table__.primary_key.columns]  # type: ignore
 
         # Build key=value pairs for primary keys
         pk_values = []
