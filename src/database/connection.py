@@ -13,7 +13,7 @@ Environment Variables:
 """
 
 import os
-from typing import Generator
+from typing import Any, Generator
 
 from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
@@ -44,14 +44,14 @@ engine = create_engine(
 
 # Enable connection pool statistics logging
 @event.listens_for(Engine, "connect")
-def receive_connect(dbapi_conn, connection_record):
+def receive_connect(dbapi_conn: Any, connection_record: Any) -> None:
     """Log database connections for monitoring."""
     # This can be extended with logging if needed
     pass
 
 
 @event.listens_for(Engine, "checkout")
-def receive_checkout(dbapi_conn, connection_record, connection_proxy):
+def receive_checkout(dbapi_conn: Any, connection_record: Any, connection_proxy: Any) -> None:
     """Track connection checkout for debugging pool exhaustion."""
     # This can be extended with logging/metrics if needed
     pass
@@ -156,8 +156,8 @@ def get_db_info() -> dict:
         "database": parsed.path.lstrip("/"),
         "host": parsed.hostname,
         "port": parsed.port,
-        "pool_size": pool.size(),
-        "checked_out_connections": pool.checkedout(),
-        "overflow": pool.overflow(),
-        "pool_timeout": pool._timeout,
+        "pool_size": pool.size(),  # type: ignore
+        "checked_out_connections": pool.checkedout(),  # type: ignore
+        "overflow": pool.overflow(),  # type: ignore
+        "pool_timeout": pool._timeout,  # type: ignore
     }

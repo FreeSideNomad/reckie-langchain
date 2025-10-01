@@ -220,4 +220,7 @@ class DocumentType(Base, TimestampMixin):
 
     def __repr__(self) -> str:
         """String representation showing type name and step count."""
-        return f"DocumentType(id={self.id}, type_name='{self.type_name}', steps={self.workflow_step_count})"
+        return (
+            f"DocumentType(id={self.id}, type_name='{self.type_name}', "
+            f"steps={self.workflow_step_count})"
+        )

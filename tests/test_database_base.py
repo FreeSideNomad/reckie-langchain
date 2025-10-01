@@ -10,7 +10,6 @@ Tests:
 
 from datetime import datetime
 
-import pytest
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
