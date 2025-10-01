@@ -167,10 +167,10 @@ class TestMarkDescendantsForReview:
         story = hierarchy_documents["story"]
 
         # Mark descendants
-        count = service.mark_descendants_for_review(vision.id)
+        marked_ids = service.mark_descendants_for_review(vision.id)
 
         # Should mark 3 descendants: feature, epic, story
-        assert count == 3
+        assert len(marked_ids) == 3
 
         # Refresh from database
         db_session.refresh(feature)
@@ -200,10 +200,10 @@ class TestMarkDescendantsForReview:
         story = hierarchy_documents["story"]
 
         # Mark only 2 levels deep
-        count = service.mark_descendants_for_review(vision.id, max_depth=2)
+        marked_ids = service.mark_descendants_for_review(vision.id, max_depth=2)
 
         # Should mark only feature and epic
-        assert count == 2
+        assert len(marked_ids) == 2
 
         # Refresh from database
         db_session.refresh(feature)
@@ -222,10 +222,10 @@ class TestMarkDescendantsForReview:
         story = hierarchy_documents["story"]
 
         # Mark descendants (leaf node)
-        count = service.mark_descendants_for_review(story.id)
+        marked_ids = service.mark_descendants_for_review(story.id)
 
         # Should mark 0 descendants
-        assert count == 0
+        assert len(marked_ids) == 0
 
     def test_mark_descendants_mid_hierarchy(self, service, hierarchy_documents, db_session):
         """Test marking descendants from middle of hierarchy."""
@@ -234,10 +234,10 @@ class TestMarkDescendantsForReview:
         story = hierarchy_documents["story"]
 
         # Mark descendants from feature
-        count = service.mark_descendants_for_review(feature.id)
+        marked_ids = service.mark_descendants_for_review(feature.id)
 
         # Should mark epic and story
-        assert count == 2
+        assert len(marked_ids) == 2
 
         # Refresh from database
         db_session.refresh(epic)
@@ -386,9 +386,9 @@ class TestEdgeCases:
         """Test marking descendants for non-existent document."""
         fake_id = uuid.uuid4()
 
-        # Should return 0 (no descendants)
-        count = service.mark_descendants_for_review(fake_id)
-        assert count == 0
+        # Should return empty list (no descendants)
+        marked_ids = service.mark_descendants_for_review(fake_id)
+        assert len(marked_ids) == 0
 
     def test_get_parent_context_nonexistent_document(self, service):
         """Test getting context for non-existent document."""
