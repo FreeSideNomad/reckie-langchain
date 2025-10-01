@@ -9,6 +9,7 @@ This document defines the complete development workflow for this project when wo
 3. **Clean Builds Only:** PRs only created after successful CI/CD
 4. **Test Coverage:** Minimum 85% line and branch coverage required
 5. **LLM Attribution:** All commits include Claude Code attribution
+6. **Hierarchical Linking:** Features link to Epics, Epics link to User Stories
 
 ## Complete User Story Workflow
 
@@ -23,6 +24,145 @@ gh issue view <issue-number>
 # If issue doesn't exist, create it first
 # Use GitHub issue templates: user-story.yml, epic.yml, or feature.yml
 ```
+
+**Rule:** Never implement a user story without a corresponding GitHub issue.
+
+## GitHub Issue Hierarchy & Linking
+
+### Issue Types and Relationships
+
+**3-Level Hierarchy:**
+1. **Feature Issues** → link to child Epic issues
+2. **Epic Issues** → link to child User Story issues
+3. **User Story Issues** → link to parent Epic issue
+
+### Linking Pattern
+
+**CRITICAL:** Use GitHub task list checkboxes with issue numbers for proper linking.
+
+#### Feature Issue Format
+```markdown
+## Epics
+
+- [x] #2: Epic F1-E1: Docker & PostgreSQL Setup (5 SP)
+- [x] #8: Epic F1-E2: Database Schema Design (8 SP)
+- [ ] #17: Epic F1-E4: SQLAlchemy ORM Models (8 SP)
+- [ ] #18: Epic F1-E5: Document Relationships & Hierarchy (5 SP)
+```
+
+**Why checkboxes?**
+- ✅ Shows progress at a glance
+- ✅ Clickable links to child issues
+- ✅ GitHub renders progress bar automatically
+- ✅ Enables automation triggers
+
+#### Epic Issue Format
+```markdown
+## User Stories
+
+- [x] #31: US-F1-E4-S1: Base Model and Session Management (2 SP)
+- [x] #33: US-F1-E4-S2: Core Models (User, DocumentType, Document) (3 SP)
+- [ ] #35: US-F1-E4-S3: Relationship Models (2 SP)
+- [ ] #37: US-F1-E4-S4: Vector Embedding Model (1 SP)
+```
+
+#### User Story Issue Format
+```markdown
+## Epic
+
+**Parent:** #17 - Epic F1-E4: SQLAlchemy ORM Models
+```
+
+### Creating Issues
+
+**When creating Feature/Epic/User Story issues, ALWAYS:**
+
+1. **For Features:** Include "## Epics" section with checkbox links to all child epics
+2. **For Epics:** Include "## User Stories" section with checkbox links to all child user stories
+3. **For User Stories:** Include "## Epic" section linking to parent epic
+
+**Example GitHub Issue Creation:**
+
+```bash
+# Create Epic issue with user story checkboxes
+gh issue create --title "Epic F1-E7: REST API Layer" --label "epic,P0" --body "
+## User Stories
+
+- [ ] #46: US-F1-E7-S1: FastAPI Foundation (1 SP)
+- [ ] #47: US-F1-E7-S2: Document CRUD Endpoints (2 SP)
+- [ ] #48: US-F1-E7-S3: Relationship Endpoints (2 SP)
+
+## Acceptance Criteria
+...
+"
+```
+
+### Updating Issues
+
+When child issues are created AFTER the parent, update the parent:
+
+```bash
+# Update epic to add newly created user story links
+gh issue edit 51 --body "$(cat <<'EOF'
+## User Stories
+
+- [ ] #46: US-F1-E7-S1: FastAPI Foundation (1 SP)
+- [ ] #47: US-F1-E7-S2: Document CRUD Endpoints (2 SP)
+
+## Acceptance Criteria
+...
+EOF
+)"
+```
+
+### Common Mistakes to Avoid
+
+❌ **DON'T use plain numbered lists:**
+```markdown
+## User Stories
+1. US-F1-E7-S1: FastAPI Foundation (1 SP)
+2. US-F1-E7-S2: Document CRUD Endpoints (2 SP)
+```
+
+❌ **DON'T use "#TBD" placeholders:**
+```markdown
+## User Stories
+- [ ] #TBD: US-F1-E7-S1: FastAPI Foundation (1 SP)
+```
+
+✅ **DO use checkboxes with actual issue numbers:**
+```markdown
+## User Stories
+- [ ] #46: US-F1-E7-S1: FastAPI Foundation (1 SP)
+- [ ] #47: US-F1-E7-S2: Document CRUD Endpoints (2 SP)
+```
+
+### Automation & Future Extensions
+
+The system is being designed to auto-generate GitHub issues from agile documents:
+
+**Planned Workflow:**
+1. LLM generates Epic markdown (wiki/epic-f1-ex.md)
+2. LLM parses epic → extracts user stories
+3. LLM creates User Story GitHub issues (#46, #47, #48...)
+4. LLM creates Epic GitHub issue with links to user stories
+5. LLM updates Feature issue with link to new epic
+
+**Template-Based Issue Generation:**
+```python
+# Future: Automated issue creation
+def create_user_story_issue(epic_id: str, story_data: dict) -> int:
+    """Generate GitHub issue from user story template."""
+    body = render_template('user-story.md', story_data)
+    issue_number = gh_create_issue(title=story_data['title'], body=body)
+    return issue_number
+```
+
+**Requirements for LLM-Generated Issues:**
+- Use consistent markdown formatting (repeatable)
+- Include all required sections (testable structure)
+- Link to parent epic (hierarchical integrity)
+- Use checkbox task lists (GitHub automation)
 
 **Rule:** Never implement a user story without a corresponding GitHub issue.
 
