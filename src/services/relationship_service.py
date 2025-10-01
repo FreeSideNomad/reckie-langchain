@@ -646,3 +646,105 @@ class RelationshipService:
         )
 
         return breadcrumb_items
+
+    def mark_descendants_for_review(
+        self, document_id: uuid.UUID, max_depth: Optional[int] = None
+    ) -> int:
+        """
+        Mark all descendant documents for review after parent change.
+
+        When a parent document changes, all descendants should be reviewed
+        to ensure consistency.
+
+        Args:
+            document_id: Parent document UUID that changed
+            max_depth: Maximum depth to propagate (None = unlimited)
+
+        Returns:
+            Number of descendants marked for review
+
+        Example:
+            count = service.mark_descendants_for_review(vision_id)
+            # Returns: 15 (all features, epics, stories marked)
+        """
+        from datetime import datetime, timezone
+
+        # Get all descendants
+        descendants = self.get_descendants(document_id, max_depth=max_depth)
+
+        # Mark each descendant
+        marked_count = 0
+        for doc, _, depth in descendants:
+            # Update metadata
+            if doc.doc_metadata is None:
+                doc.doc_metadata = {}
+
+            doc.doc_metadata["needs_review"] = True
+            doc.doc_metadata["parent_changed"] = {
+                "parent_id": str(document_id),
+                "changed_at": datetime.now(timezone.utc).isoformat(),
+                "depth_from_changed": depth,
+            }
+
+            # Mark the JSONB field as modified
+            from sqlalchemy.orm.attributes import flag_modified
+
+            flag_modified(doc, "doc_metadata")
+
+            marked_count += 1
+
+        # Commit changes
+        self.db.commit()
+
+        return marked_count
+
+    def get_parent_context(self, document_id: uuid.UUID, max_chars_per_parent: int = 2000) -> str:
+        """
+        Aggregate parent document context for RAG.
+
+        Retrieves all ancestor documents and formats their content
+        for use as context in LLM prompts.
+
+        Args:
+            document_id: Document UUID to get context for
+            max_chars_per_parent: Maximum characters per parent (default: 2000)
+
+        Returns:
+            Formatted markdown string with parent context
+
+        Example:
+            context = service.get_parent_context(story_id)
+            # Returns:
+            # # Parent Context
+            #
+            # ## Vision: Product Roadmap 2024
+            # Our vision is to...
+            #
+            # ## Feature: User Authentication
+            # This feature will provide...
+            #
+            # ## Epic: Social Login
+            # Users should be able to...
+        """
+        # Get all ancestors
+        ancestors = self.get_ancestors(document_id)
+
+        if not ancestors:
+            return ""
+
+        # Build context from root to immediate parent
+        context_parts = ["# Parent Context\n"]
+
+        for doc, _, depth in reversed(ancestors):  # Root first
+            # Add section for this parent
+            context_parts.append(f"## {doc.document_type}: {doc.title}\n")
+
+            # Get content (truncate if needed)
+            content = doc.content_markdown or ""
+            if len(content) > max_chars_per_parent:
+                content = content[:max_chars_per_parent] + "\n\n[...truncated]"
+
+            context_parts.append(content)
+            context_parts.append("\n")  # Spacing between parents
+
+        return "\n".join(context_parts)
