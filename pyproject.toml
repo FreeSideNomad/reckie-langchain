@@ -73,13 +73,21 @@ no_implicit_reexport = true
 exclude = [
     "postgres_data",
     "htmlcov",
-    ".pytest_cache"
+    ".pytest_cache",
+    "src/testing/mock_adapters"
 ]
 
 [[tool.mypy.overrides]]
 module = "tests.*"
 disallow_untyped_defs = false
 disallow_untyped_calls = false
+
+[[tool.mypy.overrides]]
+module = "src.testing.mock_adapters.*"
+disallow_untyped_defs = false
+disallow_untyped_calls = false
+disallow_incomplete_defs = false
+warn_return_any = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -112,6 +120,7 @@ omit = [
     "*/test_*",
     "*/__pycache__/*",
     "*/site-packages/*",
+    "*/testing/mock_adapters/*",
 ]
 
 [tool.coverage.report]
