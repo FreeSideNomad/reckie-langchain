@@ -5,6 +5,7 @@ Exports all SQLAlchemy ORM models for the application.
 """
 
 from src.database.models.conversation import Conversation
+from src.database.models.conversation_metric import ConversationMetric
 from src.database.models.document import Document
 from src.database.models.document_embedding import DocumentEmbedding
 from src.database.models.document_relationship import DocumentRelationship
@@ -18,6 +19,7 @@ __all__ = [
     "Document",
     "DocumentRelationship",
     "Conversation",
+    "ConversationMetric",
     "DocumentVersion",
     "DocumentEmbedding",
 ]
