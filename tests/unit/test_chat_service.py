@@ -10,6 +10,7 @@ from src.services.chat_service import ChatService
 class TestChatService:
     """Test suite for ChatService."""
 
+    @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})
     def test_chat_service_initialization_default(self):
         """Test ChatService initializes with default parameters."""
         service = ChatService()
@@ -18,6 +19,7 @@ class TestChatService:
         assert service.chat_model.temperature == 0.7
         assert service.chat_model.streaming is True
 
+    @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})
     def test_chat_service_initialization_custom(self):
         """Test ChatService initializes with custom parameters."""
         service = ChatService(model="gpt-3.5-turbo", temperature=0.5, streaming=False)
@@ -35,7 +37,13 @@ class TestChatService:
         assert service.chat_model.openai_api_key.get_secret_value() == "test-key"
 
     @patch("src.services.chat_service.PostgresChatMessageHistory")
-    @patch.dict(os.environ, {"DATABASE_URL": "postgresql://test:test@localhost/test"})
+    @patch.dict(
+        os.environ,
+        {
+            "DATABASE_URL": "postgresql://test:test@localhost/test",
+            "OPENAI_API_KEY": "test-key",
+        },
+    )
     def test_get_conversation_memory_default_connection(self, mock_history):
         """Test get_conversation_memory uses DATABASE_URL from environment."""
         service = ChatService()
@@ -49,6 +57,7 @@ class TestChatService:
         )
 
     @patch("src.services.chat_service.PostgresChatMessageHistory")
+    @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})
     def test_get_conversation_memory_custom_connection(self, mock_history):
         """Test get_conversation_memory with custom connection string."""
         service = ChatService()
@@ -62,6 +71,7 @@ class TestChatService:
         )
 
     @patch("src.services.chat_service.PostgresChatMessageHistory")
+    @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})
     def test_get_conversation_memory_returns_history_instance(self, mock_history):
         """Test get_conversation_memory returns PostgresChatMessageHistory."""
         service = ChatService()
