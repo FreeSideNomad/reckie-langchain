@@ -1,0 +1,118 @@
+{
+  "correlation_id": "chat_21fe92e4_d18f1acb",
+  "layer": "raw_openai_api",
+  "timestamp": 1759367047.1062322,
+  "timestamp_iso": "2025-10-02T01:04:07.fZ",
+  "api_type": "chat",
+  "request": {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.109.1",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.109.1",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "x64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.13.7",
+      "x-stainless-async": "false",
+      "x-stainless-raw-response": "true",
+      "x-stainless-retry-count": "0",
+      "content-length": "552"
+    },
+    "body": {
+      "messages": [
+        {
+          "content": "I'm working on a commercial banking platform for RBC. The system handles payment origination for business clients, allowing them to initiate wire transfers, ACH payments, and international transactions. We also have transaction reporting with real-time status updates. The user management module handles corporate hierarchies with maker-checker approval workflows. Target users are treasury managers and finance controllers at mid-to-large enterprises.",
+          "role": "user"
+        }
+      ],
+      "model": "gpt-3.5-turbo",
+      "stream": false,
+      "temperature": 0.0
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "date": "Thu, 02 Oct 2025 01:04:12 GMT",
+      "content-type": "application/json",
+      "transfer-encoding": "chunked",
+      "connection": "keep-alive",
+      "access-control-expose-headers": "X-Request-ID",
+      "openai-organization": "user-tu2zxupnayleuuciciz3bjxf",
+      "openai-processing-ms": "997",
+      "openai-project": "proj_KdGrIQRlLLMNfXk1c5cwn0Ng",
+      "openai-version": "2020-10-01",
+      "x-envoy-upstream-service-time": "1021",
+      "x-ratelimit-limit-requests": "10000",
+      "x-ratelimit-limit-tokens": "200000",
+      "x-ratelimit-remaining-requests": "9999",
+      "x-ratelimit-remaining-tokens": "199885",
+      "x-ratelimit-reset-requests": "8.64s",
+      "x-ratelimit-reset-tokens": "34ms",
+      "x-request-id": "req_71b18a3c7f214e1d824c485568abfd3e",
+      "x-openai-proxy-wasm": "v0.1",
+      "cf-cache-status": "DYNAMIC",
+      "set-cookie": "__cf_bm=OPmlzQ1Y790q.mAQ4nswv_r2kTbbpKPlZ2sUw5F9sww-1759367052-1.0.1.1-MfkyncdEwEQOBI1V1E7QsDi_FH.u2CgLjNt2ii87CrQEdEUeXKj86eRS5f8oKXMQNVyoIXTokbQ8IYczRXSrvLPLM7NrnGG055HDzKL_Rlk; path=/; expires=Thu, 02-Oct-25 01:34:12 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None, _cfuvid=9GQV221HjH5bMUdhN39FqnfPXr3y9MgXftsy_rrzTtA-1759367052483-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "x-content-type-options": "nosniff",
+      "server": "cloudflare",
+      "cf-ray": "988048c70f2bb40a-YYZ",
+      "content-encoding": "gzip",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "body": {
+      "id": "chatcmpl-CM21r3dyPIHK0Ugd0VmPkzXRU7Ecc",
+      "object": "chat.completion",
+      "created": 1759367051,
+      "model": "gpt-3.5-turbo-0125",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "That sounds like a comprehensive and robust platform for commercial banking clients. It's great that you have included features like payment origination, transaction reporting, and user management to cater to the needs of treasury managers and finance controllers. Real-time status updates and maker-checker approval workflows are essential for ensuring efficient and secure transactions. I'm sure this platform will be a valuable tool for businesses looking to manage their finances effectively. Good luck with the development process!",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 85,
+        "completion_tokens": 89,
+        "total_tokens": 174,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "service_tier": "default",
+      "system_fingerprint": null
+    }
+  },
+  "metadata": {
+    "duration_ms": 1161.64,
+    "tokens": {
+      "prompt": 85,
+      "completion": 89,
+      "total": 174
+    },
+    "cost_usd": 0.000176,
+    "model": "gpt-3.5-turbo",
+    "openai_request_id": "req_71b18a3c7f214e1d824c485568abfd3e"
+  }
+}

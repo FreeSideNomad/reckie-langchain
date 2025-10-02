@@ -1,0 +1,69 @@
+{
+  "correlation_id": "chat_9595d906_752379e4",
+  "layer": "langchain_abstraction",
+  "timestamp": 1759367057.090859,
+  "timestamp_iso": "2025-10-01T21:04:17.090861",
+  "api_type": "chat",
+  "langchain_input": {
+    "prompt": "Commercial lending platform for construction loans. Focus on draw schedules, lien waivers, and inspection workflows.",
+    "messages": [
+      {
+        "role": "human",
+        "content": "Commercial lending platform for construction loans. Focus on draw schedules, lien waivers, and inspection workflows."
+      }
+    ],
+    "model": "gpt-3.5-turbo"
+  },
+  "langchain_output": {
+    "response": "Our commercial lending platform is specifically designed for construction loans, providing a streamlined process for draw schedules, lien waivers, and inspection workflows. \n\nWith our platform, lenders can easily create and manage draw schedules, ensuring that funds are disbursed in a timely manner as construction milestones are met. Lien waivers can be securely collected and stored, reducing the risk of potential legal issues down the line. \n\nOur inspection workflows allow lenders to schedule and track property inspections, ensuring that construction progress is monitored and funds are released appropriately. \n\nOverall, our platform is designed to simplify the construction loan process, making it easier for lenders to manage their loans and for borrowers to access the funds they need to complete their projects.",
+    "generations": [
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      },
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      },
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      },
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "duration_ms": 2232.35,
+    "model_name": "gpt-3.5-turbo-0125",
+    "token_usage": {
+      "completion_tokens": 139,
+      "prompt_tokens": 26,
+      "total_tokens": 165,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "correlation_id": "chat_68aec5a1_62436115",
+  "layer": "langchain_abstraction",
+  "timestamp": 1759367131.365624,
+  "timestamp_iso": "2025-10-01T21:05:31.365626",
+  "api_type": "chat",
+  "langchain_input": {
+    "prompt": "Create Business Context for an e-commerce platform",
+    "messages": [
+      {
+        "role": "human",
+        "content": "Create Business Context for an e-commerce platform"
+      }
+    ],
+    "model": "gpt-3.5-turbo"
+  },
+  "langchain_output": {
+    "response": "Our e-commerce platform is designed to provide a seamless and convenient shopping experience for customers looking to purchase a wide range of products online. With the increasing trend towards online shopping, our platform aims to cater to the needs of modern consumers who prefer the convenience of shopping from the comfort of their own homes.\n\nThrough our platform, customers can browse through a diverse selection of products, compare prices, read reviews, and make secure online payments. We partner with a variety of trusted brands and vendors to offer a wide range of products, from electronics and fashion to home goods and beauty products.\n\nOur platform also provides sellers with a user-friendly interface to set up their online stores, manage inventory, and track sales. We offer marketing and promotional tools to help sellers reach a larger audience and increase their sales.\n\nOverall, our e-commerce platform aims to create a thriving online marketplace where customers can easily find and purchase the products they need, while providing sellers with the tools and support they need to grow their online businesses.",
+    "generations": [
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      },
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      },
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      },
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "duration_ms": 1299.73,
+    "model_name": "gpt-3.5-turbo-0125",
+    "token_usage": {
+      "completion_tokens": 197,
+      "prompt_tokens": 15,
+      "total_tokens": 212,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "correlation_id": "chat_936dbc87_ec9685c7",
+  "layer": "raw_openai_api",
+  "timestamp": 1759366547.909291,
+  "timestamp_iso": "2025-10-02T00:55:47.fZ",
+  "api_type": "chat",
+  "request": {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.109.1",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.109.1",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "x64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.13.7",
+      "x-stainless-async": "false",
+      "x-stainless-raw-response": "true",
+      "x-stainless-retry-count": "0",
+      "cookie": "__cf_bm=86Bp4DmLtNziAVtSF3j5y.MFuG3qJMjUBDAGIOef8Pw-1759366552-1.0.1.1-U5_v0Yu09plav7J2qZR5bshcXd8GHq9Yhdysm1thakiVEme.WVZrkxy1dIA1iQOjSiEWyaLdDIiA87aWH0NfElLMvt3CFEezsE96JJcoCL8; _cfuvid=4hBy4O.GTn_9y_q0VouSTly6.PKRbS24FdN5hl4BbJY-1759366552852-0.0.1.1-604800000",
+      "content-length": "112"
+    },
+    "body": {
+      "messages": [
+        {
+          "content": "What is 2+2?",
+          "role": "user"
+        }
+      ],
+      "model": "gpt-3.5-turbo",
+      "stream": false,
+      "temperature": 0.0
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "date": "Thu, 02 Oct 2025 00:55:53 GMT",
+      "content-type": "application/json",
+      "transfer-encoding": "chunked",
+      "connection": "keep-alive",
+      "access-control-expose-headers": "X-Request-ID",
+      "openai-organization": "user-tu2zxupnayleuuciciz3bjxf",
+      "openai-processing-ms": "159",
+      "openai-project": "proj_KdGrIQRlLLMNfXk1c5cwn0Ng",
+      "openai-version": "2020-10-01",
+      "x-envoy-upstream-service-time": "192",
+      "x-ratelimit-limit-requests": "10000",
+      "x-ratelimit-limit-tokens": "200000",
+      "x-ratelimit-remaining-requests": "9999",
+      "x-ratelimit-remaining-tokens": "199995",
+      "x-ratelimit-reset-requests": "8.64s",
+      "x-ratelimit-reset-tokens": "1ms",
+      "x-request-id": "req_8390037506a34f1e9b8aaed5084cc438",
+      "x-openai-proxy-wasm": "v0.1",
+      "cf-cache-status": "DYNAMIC",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "x-content-type-options": "nosniff",
+      "server": "cloudflare",
+      "cf-ray": "98803c9bab973700-YYZ",
+      "content-encoding": "gzip",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "body": {
+      "id": "chatcmpl-CM1tpmV5Ei0JHBFrO508nVEOLfl9G",
+      "object": "chat.completion",
+      "created": 1759366553,
+      "model": "gpt-3.5-turbo-0125",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "2+2 equals 4.",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 14,
+        "completion_tokens": 7,
+        "total_tokens": 21,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "service_tier": "default",
+      "system_fingerprint": null
+    }
+  },
+  "metadata": {
+    "duration_ms": 386.63,
+    "tokens": {
+      "prompt": 14,
+      "completion": 7,
+      "total": 21
+    },
+    "cost_usd": 1.75e-05,
+    "model": "gpt-3.5-turbo",
+    "openai_request_id": "req_8390037506a34f1e9b8aaed5084cc438"
+  }
+}

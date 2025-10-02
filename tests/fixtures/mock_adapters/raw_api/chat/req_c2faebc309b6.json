@@ -1,0 +1,118 @@
+{
+  "correlation_id": "req_c2faebc309b6",
+  "layer": "raw_openai_api",
+  "timestamp": 1759367057.0893922,
+  "timestamp_iso": "2025-10-02T01:04:17.fZ",
+  "api_type": "chat",
+  "request": {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.109.1",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.109.1",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "x64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.13.7",
+      "x-stainless-async": "false",
+      "x-stainless-raw-response": "true",
+      "x-stainless-retry-count": "1",
+      "cookie": "__cf_bm=OPmlzQ1Y790q.mAQ4nswv_r2kTbbpKPlZ2sUw5F9sww-1759367052-1.0.1.1-MfkyncdEwEQOBI1V1E7QsDi_FH.u2CgLjNt2ii87CrQEdEUeXKj86eRS5f8oKXMQNVyoIXTokbQ8IYczRXSrvLPLM7NrnGG055HDzKL_Rlk; _cfuvid=9GQV221HjH5bMUdhN39FqnfPXr3y9MgXftsy_rrzTtA-1759367052483-0.0.1.1-604800000",
+      "content-length": "216"
+    },
+    "body": {
+      "messages": [
+        {
+          "content": "Commercial lending platform for construction loans. Focus on draw schedules, lien waivers, and inspection workflows.",
+          "role": "user"
+        }
+      ],
+      "model": "gpt-3.5-turbo",
+      "stream": false,
+      "temperature": 0.0
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "date": "Thu, 02 Oct 2025 01:04:22 GMT",
+      "content-type": "application/json",
+      "transfer-encoding": "chunked",
+      "connection": "keep-alive",
+      "access-control-expose-headers": "X-Request-ID",
+      "openai-organization": "user-tu2zxupnayleuuciciz3bjxf",
+      "openai-processing-ms": "925",
+      "openai-project": "proj_KdGrIQRlLLMNfXk1c5cwn0Ng",
+      "openai-version": "2020-10-01",
+      "x-envoy-upstream-service-time": "948",
+      "x-ratelimit-limit-requests": "10000",
+      "x-ratelimit-limit-tokens": "200000",
+      "x-ratelimit-remaining-requests": "9995",
+      "x-ratelimit-remaining-tokens": "199969",
+      "x-ratelimit-reset-requests": "42.063s",
+      "x-ratelimit-reset-tokens": "9ms",
+      "x-request-id": "req_c331b7b18621449595dc7a9db3f3b45f",
+      "x-openai-proxy-wasm": "v0.1",
+      "cf-cache-status": "DYNAMIC",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "x-content-type-options": "nosniff",
+      "server": "cloudflare",
+      "cf-ray": "988049042808b40a-YYZ",
+      "content-encoding": "gzip",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "body": {
+      "id": "chatcmpl-CM221UNsBhzqFO6QisDgoZXN55UBZ",
+      "object": "chat.completion",
+      "created": 1759367061,
+      "model": "gpt-3.5-turbo-0125",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Our commercial lending platform is specifically designed for construction loans, providing a streamlined process for draw schedules, lien waivers, and inspection workflows. \n\nWith our platform, lenders can easily create and manage draw schedules, ensuring that funds are disbursed in a timely manner as construction milestones are met. Lien waivers can be securely collected and stored, reducing the risk of potential legal issues down the line. \n\nOur inspection workflows allow lenders to schedule and track property inspections, ensuring that construction progress is monitored and funds are released appropriately. \n\nOverall, our platform is designed to simplify the construction loan process, making it easier for lenders to manage their loans and for borrowers to access the funds they need to complete their projects.",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 26,
+        "completion_tokens": 139,
+        "total_tokens": 165,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "service_tier": "default",
+      "system_fingerprint": null
+    }
+  },
+  "metadata": {
+    "duration_ms": 1354.32,
+    "tokens": {
+      "prompt": 26,
+      "completion": 139,
+      "total": 165
+    },
+    "cost_usd": 0.0002215,
+    "model": "gpt-3.5-turbo",
+    "openai_request_id": "req_c331b7b18621449595dc7a9db3f3b45f"
+  }
+}
