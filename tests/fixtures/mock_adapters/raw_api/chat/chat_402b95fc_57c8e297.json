@@ -1,0 +1,118 @@
+{
+  "correlation_id": "chat_402b95fc_57c8e297",
+  "layer": "raw_openai_api",
+  "timestamp": 1759366198.885571,
+  "timestamp_iso": "2025-10-02T00:49:58.fZ",
+  "api_type": "chat",
+  "request": {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.109.1",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.109.1",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "x64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.13.7",
+      "x-stainless-async": "false",
+      "x-stainless-raw-response": "true",
+      "x-stainless-retry-count": "0",
+      "content-length": "109"
+    },
+    "body": {
+      "messages": [
+        {
+          "content": "Say hello",
+          "role": "user"
+        }
+      ],
+      "model": "gpt-3.5-turbo",
+      "stream": false,
+      "temperature": 0.0
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "date": "Thu, 02 Oct 2025 00:50:04 GMT",
+      "content-type": "application/json",
+      "transfer-encoding": "chunked",
+      "connection": "keep-alive",
+      "access-control-expose-headers": "X-Request-ID",
+      "openai-organization": "user-tu2zxupnayleuuciciz3bjxf",
+      "openai-processing-ms": "143",
+      "openai-project": "proj_KdGrIQRlLLMNfXk1c5cwn0Ng",
+      "openai-version": "2020-10-01",
+      "x-envoy-upstream-service-time": "352",
+      "x-ratelimit-limit-requests": "10000",
+      "x-ratelimit-limit-tokens": "200000",
+      "x-ratelimit-remaining-requests": "9999",
+      "x-ratelimit-remaining-tokens": "199995",
+      "x-ratelimit-reset-requests": "8.64s",
+      "x-ratelimit-reset-tokens": "1ms",
+      "x-request-id": "req_7b15ee6fc6914e98ba2eee36193edd48",
+      "x-openai-proxy-wasm": "v0.1",
+      "cf-cache-status": "DYNAMIC",
+      "set-cookie": "__cf_bm=ekzULlPZ8iuJ3_yB5F6o1wov.o7hg37xmuRm8gtjZ0c-1759366204-1.0.1.1-9kfsd.kGZeM5aOZqJmCCmSQ0p8wrzEelir5P2Mx3JvXq.1ApnA9Pc.ASvqy7GJWHKjmuTLhFui.4A7vcPIaEswGuH6WR0Ls1UK9pC88nZ_I; path=/; expires=Thu, 02-Oct-25 01:20:04 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None, _cfuvid=xHUKFSJYWpjCtxhzLO78qQ8dPIDTECL.fXwnLxqBgEw-1759366204226-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "x-content-type-options": "nosniff",
+      "server": "cloudflare",
+      "cf-ray": "988034131a40abfd-YYZ",
+      "content-encoding": "gzip",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "body": {
+      "id": "chatcmpl-CM1oCbWOlZkAuL0mf20sUUnuQnYbw",
+      "object": "chat.completion",
+      "created": 1759366204,
+      "model": "gpt-3.5-turbo-0125",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Hello! How can I assist you today?",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 9,
+        "completion_tokens": 9,
+        "total_tokens": 18,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "service_tier": "default",
+      "system_fingerprint": null
+    }
+  },
+  "metadata": {
+    "duration_ms": 882.38,
+    "tokens": {
+      "prompt": 9,
+      "completion": 9,
+      "total": 18
+    },
+    "cost_usd": 1.8e-05,
+    "model": "gpt-3.5-turbo",
+    "openai_request_id": "req_7b15ee6fc6914e98ba2eee36193edd48"
+  }
+}

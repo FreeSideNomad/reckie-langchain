@@ -1,0 +1,118 @@
+{
+  "correlation_id": "chat_1283ad89_c2040b17",
+  "layer": "raw_openai_api",
+  "timestamp": 1759367050.9142568,
+  "timestamp_iso": "2025-10-02T01:04:10.fZ",
+  "api_type": "chat",
+  "request": {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.109.1",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.109.1",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "x64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.13.7",
+      "x-stainless-async": "false",
+      "x-stainless-raw-response": "true",
+      "x-stainless-retry-count": "0",
+      "cookie": "__cf_bm=OPmlzQ1Y790q.mAQ4nswv_r2kTbbpKPlZ2sUw5F9sww-1759367052-1.0.1.1-MfkyncdEwEQOBI1V1E7QsDi_FH.u2CgLjNt2ii87CrQEdEUeXKj86eRS5f8oKXMQNVyoIXTokbQ8IYczRXSrvLPLM7NrnGG055HDzKL_Rlk; _cfuvid=9GQV221HjH5bMUdhN39FqnfPXr3y9MgXftsy_rrzTtA-1759367052483-0.0.1.1-604800000",
+      "content-length": "154"
+    },
+    "body": {
+      "messages": [
+        {
+          "content": "We're building a banking app. It's for business users.",
+          "role": "user"
+        }
+      ],
+      "model": "gpt-3.5-turbo",
+      "stream": false,
+      "temperature": 0.0
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "date": "Thu, 02 Oct 2025 01:04:16 GMT",
+      "content-type": "application/json",
+      "transfer-encoding": "chunked",
+      "connection": "keep-alive",
+      "access-control-expose-headers": "X-Request-ID",
+      "openai-organization": "user-tu2zxupnayleuuciciz3bjxf",
+      "openai-processing-ms": "1633",
+      "openai-project": "proj_KdGrIQRlLLMNfXk1c5cwn0Ng",
+      "openai-version": "2020-10-01",
+      "x-envoy-upstream-service-time": "1656",
+      "x-ratelimit-limit-requests": "10000",
+      "x-ratelimit-limit-tokens": "200000",
+      "x-ratelimit-remaining-requests": "9997",
+      "x-ratelimit-remaining-tokens": "199984",
+      "x-ratelimit-reset-requests": "22.785s",
+      "x-ratelimit-reset-tokens": "4ms",
+      "x-request-id": "req_95b58c2961d942e592bcaf97b9dcaa45",
+      "x-openai-proxy-wasm": "v0.1",
+      "cf-cache-status": "DYNAMIC",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "x-content-type-options": "nosniff",
+      "server": "cloudflare",
+      "cf-ray": "988048dacfdfb40a-YYZ",
+      "content-encoding": "gzip",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "body": {
+      "id": "chatcmpl-CM21ucM9dJ41PVDrv6diUGOK2lE2Q",
+      "object": "chat.completion",
+      "created": 1759367054,
+      "model": "gpt-3.5-turbo-0125",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Here are some key features that we are planning to include in the app:\n\n1. Account Management: Users will be able to view their account balances, transaction history, and manage their accounts easily through the app.\n\n2. Payments and Transfers: Users can make payments to vendors, suppliers, and employees, as well as transfer funds between accounts seamlessly.\n\n3. Invoicing: Users can create and send invoices to clients directly from the app, making it easier to track payments and manage cash flow.\n\n4. Expense Tracking: Users can categorize and track their business expenses, helping them to stay organized and manage their finances more effectively.\n\n5. Reporting and Analytics: The app will provide users with detailed financial reports and analytics, giving them insights into their business performance and helping them make informed decisions.\n\n6. Security: The app will have robust security features, such as multi-factor authentication and encryption, to ensure that users' financial data is protected at all times.\n\nOverall, our goal is to provide business users with a user-friendly and efficient banking app that helps them manage their finances effectively and grow their businesses.",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 20,
+        "completion_tokens": 221,
+        "total_tokens": 241,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "service_tier": "default",
+      "system_fingerprint": null
+    }
+  },
+  "metadata": {
+    "duration_ms": 1800.89,
+    "tokens": {
+      "prompt": 20,
+      "completion": 221,
+      "total": 241
+    },
+    "cost_usd": 0.0003415,
+    "model": "gpt-3.5-turbo",
+    "openai_request_id": "req_95b58c2961d942e592bcaf97b9dcaa45"
+  }
+}

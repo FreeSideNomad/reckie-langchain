@@ -1,0 +1,69 @@
+{
+  "correlation_id": "chat_ea2b2676_2bd7cba3",
+  "layer": "langchain_abstraction",
+  "timestamp": 1759367127.9554281,
+  "timestamp_iso": "2025-10-01T21:05:27.955429",
+  "api_type": "chat",
+  "langchain_input": {
+    "prompt": "start",
+    "messages": [
+      {
+        "role": "human",
+        "content": "start"
+      }
+    ],
+    "model": "gpt-3.5-turbo"
+  },
+  "langchain_output": {
+    "response": "Hello! How can I assist you today?",
+    "generations": [
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      },
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      },
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      },
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "duration_ms": 439.3,
+    "model_name": "gpt-3.5-turbo-0125",
+    "token_usage": {
+      "completion_tokens": 9,
+      "prompt_tokens": 8,
+      "total_tokens": 17,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      }
+    }
+  }
+}

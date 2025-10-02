@@ -1,0 +1,126 @@
+{
+  "correlation_id": "chat_f15f6ed9_39b0b312",
+  "layer": "raw_openai_api",
+  "timestamp": 1759367049.095375,
+  "timestamp_iso": "2025-10-02T01:04:09.fZ",
+  "api_type": "chat",
+  "request": {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.109.1",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.109.1",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "x64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.13.7",
+      "x-stainless-async": "false",
+      "x-stainless-raw-response": "true",
+      "x-stainless-retry-count": "0",
+      "cookie": "__cf_bm=OPmlzQ1Y790q.mAQ4nswv_r2kTbbpKPlZ2sUw5F9sww-1759367052-1.0.1.1-MfkyncdEwEQOBI1V1E7QsDi_FH.u2CgLjNt2ii87CrQEdEUeXKj86eRS5f8oKXMQNVyoIXTokbQ8IYczRXSrvLPLM7NrnGG055HDzKL_Rlk; _cfuvid=9GQV221HjH5bMUdhN39FqnfPXr3y9MgXftsy_rrzTtA-1759367052483-0.0.1.1-604800000",
+      "content-length": "1396"
+    },
+    "body": {
+      "messages": [
+        {
+          "content": "I'm working on a commercial banking platform for RBC. The system handles payment origination for business clients, allowing them to initiate wire transfers, ACH payments, and international transactions. We also have transaction reporting with real-time status updates. The user management module handles corporate hierarchies with maker-checker approval workflows. Target users are treasury managers and finance controllers at mid-to-large enterprises.",
+          "role": "user"
+        },
+        {
+          "content": "That sounds like a comprehensive and robust platform for commercial banking clients. It's great that you have included features like payment origination, transaction reporting, and user management to cater to the needs of treasury managers and finance controllers. Real-time status updates and maker-checker approval workflows are essential for ensuring efficient and secure transactions. I'm sure this platform will be a valuable tool for businesses looking to manage their finances effectively. Good luck with the development process!",
+          "role": "assistant"
+        },
+        {
+          "content": "The main challenge is the complex approval workflows. We need dual authorization for payments over $100K, and some clients need triple authorization. The system must also handle time-based holds and conditional approvals based on business rules.",
+          "role": "user"
+        }
+      ],
+      "model": "gpt-3.5-turbo",
+      "stream": false,
+      "temperature": 0.0
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "date": "Thu, 02 Oct 2025 01:04:14 GMT",
+      "content-type": "application/json",
+      "transfer-encoding": "chunked",
+      "connection": "keep-alive",
+      "access-control-expose-headers": "X-Request-ID",
+      "openai-organization": "user-tu2zxupnayleuuciciz3bjxf",
+      "openai-processing-ms": "1526",
+      "openai-project": "proj_KdGrIQRlLLMNfXk1c5cwn0Ng",
+      "openai-version": "2020-10-01",
+      "x-envoy-upstream-service-time": "1545",
+      "x-ratelimit-limit-requests": "10000",
+      "x-ratelimit-limit-tokens": "200000",
+      "x-ratelimit-remaining-requests": "9999",
+      "x-ratelimit-remaining-tokens": "199687",
+      "x-ratelimit-reset-requests": "8.64s",
+      "x-ratelimit-reset-tokens": "93ms",
+      "x-request-id": "req_1fb5ee254b0a48998b860024034fd6da",
+      "x-openai-proxy-wasm": "v0.1",
+      "cf-cache-status": "DYNAMIC",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "x-content-type-options": "nosniff",
+      "server": "cloudflare",
+      "cf-ray": "988048ce38bab40a-YYZ",
+      "content-encoding": "gzip",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "body": {
+      "id": "chatcmpl-CM21sGI6siMMNicGT6zFkctq9hsXN",
+      "object": "chat.completion",
+      "created": 1759367052,
+      "model": "gpt-3.5-turbo-0125",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Managing complex approval workflows can indeed be a challenge, especially when dealing with high-value transactions like those over $100K. Implementing dual or triple authorization requirements is crucial for ensuring security and compliance. Time-based holds and conditional approvals add another layer of complexity but are necessary to accommodate different business rules and requirements.\n\nTo address these challenges, you may want to consider implementing a flexible and customizable approval workflow engine within your platform. This engine should allow for the configuration of multiple levels of authorization, time-based holds, and conditional approvals based on specific business rules set by each client. Providing a user-friendly interface for setting up and managing these workflows will also be key to ensuring a smooth user experience for treasury managers and finance controllers.\n\nRegular testing and monitoring of the approval workflows will be essential to ensure that they are functioning correctly and meeting the needs of your clients. Additionally, providing comprehensive training and support to users on how to navigate and utilize the approval workflows effectively will be crucial for successful adoption of the platform.\n\nOverall, by carefully designing and implementing a robust approval workflow system that can handle the complexities of high-value transactions and varying client requirements, you can ensure that your commercial banking platform meets the needs of your target users and provides a secure and efficient payment origination process.",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 225,
+        "completion_tokens": 249,
+        "total_tokens": 474,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "service_tier": "default",
+      "system_fingerprint": null
+    }
+  },
+  "metadata": {
+    "duration_ms": 1966.87,
+    "tokens": {
+      "prompt": 225,
+      "completion": 249,
+      "total": 474
+    },
+    "cost_usd": 0.000486,
+    "model": "gpt-3.5-turbo",
+    "openai_request_id": "req_1fb5ee254b0a48998b860024034fd6da"
+  }
+}

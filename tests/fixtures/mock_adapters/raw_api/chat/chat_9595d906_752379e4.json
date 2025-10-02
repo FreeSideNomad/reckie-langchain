@@ -1,0 +1,70 @@
+{
+  "correlation_id": "chat_9595d906_752379e4",
+  "layer": "raw_openai_api",
+  "timestamp": 1759367055.348205,
+  "timestamp_iso": "2025-10-02T01:04:15.fZ",
+  "api_type": "chat",
+  "request": {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.109.1",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.109.1",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "x64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.13.7",
+      "x-stainless-async": "false",
+      "x-stainless-raw-response": "true",
+      "x-stainless-retry-count": "0",
+      "cookie": "__cf_bm=OPmlzQ1Y790q.mAQ4nswv_r2kTbbpKPlZ2sUw5F9sww-1759367052-1.0.1.1-MfkyncdEwEQOBI1V1E7QsDi_FH.u2CgLjNt2ii87CrQEdEUeXKj86eRS5f8oKXMQNVyoIXTokbQ8IYczRXSrvLPLM7NrnGG055HDzKL_Rlk; _cfuvid=9GQV221HjH5bMUdhN39FqnfPXr3y9MgXftsy_rrzTtA-1759367052483-0.0.1.1-604800000",
+      "content-length": "216"
+    },
+    "body": {
+      "messages": [
+        {
+          "content": "Commercial lending platform for construction loans. Focus on draw schedules, lien waivers, and inspection workflows.",
+          "role": "user"
+        }
+      ],
+      "model": "gpt-3.5-turbo",
+      "stream": false,
+      "temperature": 0.0
+    }
+  },
+  "response": {
+    "status_code": 503,
+    "headers": {
+      "date": "Thu, 02 Oct 2025 01:04:20 GMT",
+      "content-type": "text/plain",
+      "content-length": "95",
+      "connection": "keep-alive",
+      "cf-cache-status": "DYNAMIC",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "x-content-type-options": "nosniff",
+      "server": "cloudflare",
+      "cf-ray": "988048feb95cb40a-YYZ",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "body": {
+      "_raw": "upstream connect error or disconnect/reset before headers. reset reason: connection termination"
+    }
+  },
+  "metadata": {
+    "duration_ms": 486.71,
+    "tokens": {
+      "prompt": 0,
+      "completion": 0,
+      "total": 0
+    },
+    "cost_usd": 0.0,
+    "model": "gpt-3.5-turbo",
+    "openai_request_id": "unknown"
+  }
+}

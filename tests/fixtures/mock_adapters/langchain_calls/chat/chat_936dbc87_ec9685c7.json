@@ -1,0 +1,69 @@
+{
+  "correlation_id": "chat_936dbc87_ec9685c7",
+  "layer": "langchain_abstraction",
+  "timestamp": 1759366547.911646,
+  "timestamp_iso": "2025-10-01T20:55:47.911648",
+  "api_type": "chat",
+  "langchain_input": {
+    "prompt": "What is 2+2?",
+    "messages": [
+      {
+        "role": "human",
+        "content": "What is 2+2?"
+      }
+    ],
+    "model": "gpt-3.5-turbo"
+  },
+  "langchain_output": {
+    "response": "2+2 equals 4.",
+    "generations": [
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      },
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      },
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      },
+      {
+        "text": null,
+        "message": {
+          "role": "assistant",
+          "content": null
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "duration_ms": 394.08,
+    "model_name": "gpt-3.5-turbo-0125",
+    "token_usage": {
+      "completion_tokens": 7,
+      "prompt_tokens": 14,
+      "total_tokens": 21,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      }
+    }
+  }
+}

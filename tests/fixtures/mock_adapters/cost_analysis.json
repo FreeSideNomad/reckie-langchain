@@ -1,0 +1,18 @@
+{
+  "generated_at": "2025-10-01T21:06:36.835587",
+  "embeddings": {
+    "cost_usd": 0.0003394,
+    "tokens": 3394,
+    "avg_duration_ms": 362.87
+  },
+  "chat": {
+    "cost_usd": 0.0276105,
+    "tokens": 32809,
+    "avg_duration_ms": 2218.7
+  },
+  "grand_total": {
+    "cost_usd": 0.02795,
+    "tokens": 36203,
+    "total_fixtures": 65
+  }
+}

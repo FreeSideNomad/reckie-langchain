@@ -1,0 +1,118 @@
+{
+  "correlation_id": "chat_61a55f41_458eeaa0",
+  "layer": "raw_openai_api",
+  "timestamp": 1759367129.7924302,
+  "timestamp_iso": "2025-10-02T01:05:29.fZ",
+  "api_type": "chat",
+  "request": {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.109.1",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.109.1",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "x64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.13.7",
+      "x-stainless-async": "false",
+      "x-stainless-raw-response": "true",
+      "x-stainless-retry-count": "0",
+      "cookie": "__cf_bm=OPmlzQ1Y790q.mAQ4nswv_r2kTbbpKPlZ2sUw5F9sww-1759367052-1.0.1.1-MfkyncdEwEQOBI1V1E7QsDi_FH.u2CgLjNt2ii87CrQEdEUeXKj86eRS5f8oKXMQNVyoIXTokbQ8IYczRXSrvLPLM7NrnGG055HDzKL_Rlk; _cfuvid=9GQV221HjH5bMUdhN39FqnfPXr3y9MgXftsy_rrzTtA-1759367052483-0.0.1.1-604800000",
+      "content-length": "147"
+    },
+    "body": {
+      "messages": [
+        {
+          "content": "Create a vision for a space exploration startup",
+          "role": "user"
+        }
+      ],
+      "model": "gpt-3.5-turbo",
+      "stream": false,
+      "temperature": 0.0
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "date": "Thu, 02 Oct 2025 01:05:35 GMT",
+      "content-type": "application/json",
+      "transfer-encoding": "chunked",
+      "connection": "keep-alive",
+      "access-control-expose-headers": "X-Request-ID",
+      "openai-organization": "user-tu2zxupnayleuuciciz3bjxf",
+      "openai-processing-ms": "1492",
+      "openai-project": "proj_KdGrIQRlLLMNfXk1c5cwn0Ng",
+      "openai-version": "2020-10-01",
+      "x-envoy-upstream-service-time": "1512",
+      "x-ratelimit-limit-requests": "10000",
+      "x-ratelimit-limit-tokens": "200000",
+      "x-ratelimit-remaining-requests": "9979",
+      "x-ratelimit-remaining-tokens": "199986",
+      "x-ratelimit-reset-requests": "2m57.092s",
+      "x-ratelimit-reset-tokens": "4ms",
+      "x-request-id": "req_d18fa3e66ba14914872fcdfcb218a9c8",
+      "x-openai-proxy-wasm": "v0.1",
+      "cf-cache-status": "DYNAMIC",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "x-content-type-options": "nosniff",
+      "server": "cloudflare",
+      "cf-ray": "98804ac88afab40a-YYZ",
+      "content-encoding": "gzip",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "body": {
+      "id": "chatcmpl-CM23BJTeJMs06OALs5ibZ6pMwhfbf",
+      "object": "chat.completion",
+      "created": 1759367133,
+      "model": "gpt-3.5-turbo-0125",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Our vision for our space exploration startup is to push the boundaries of human knowledge and exploration by developing innovative technologies and solutions that will enable us to explore the vast unknown reaches of outer space. We envision a future where humanity is able to travel beyond our own solar system, discovering new planets, moons, and potentially even other forms of life.\n\nOur startup will focus on developing cutting-edge propulsion systems, advanced spacecraft designs, and revolutionary communication technologies that will allow us to travel further and faster than ever before. We will also prioritize sustainability and environmental responsibility in our exploration efforts, ensuring that we leave minimal impact on the environments we encounter.\n\nThrough partnerships with leading space agencies, research institutions, and private companies, we will collaborate with the best and brightest minds in the industry to achieve our goals. We will also prioritize diversity and inclusion in our team, recognizing that a diverse range of perspectives and experiences will be crucial to our success.\n\nUltimately, our vision is to inspire the next generation of explorers and scientists, showing them that the possibilities of space exploration are limitless. We believe that by pushing the boundaries of what is possible, we can unlock the secrets of the universe and pave the way for a brighter future for all of humanity.",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 15,
+        "completion_tokens": 242,
+        "total_tokens": 257,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "service_tier": "default",
+      "system_fingerprint": null
+    }
+  },
+  "metadata": {
+    "duration_ms": 1662.11,
+    "tokens": {
+      "prompt": 15,
+      "completion": 242,
+      "total": 257
+    },
+    "cost_usd": 0.0003705,
+    "model": "gpt-3.5-turbo",
+    "openai_request_id": "req_d18fa3e66ba14914872fcdfcb218a9c8"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "correlation_id": "chat_ddec3353_7e5d4a32",
+  "layer": "raw_openai_api",
+  "timestamp": 1759367083.102877,
+  "timestamp_iso": "2025-10-02T01:04:43.fZ",
+  "api_type": "chat",
+  "request": {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.109.1",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.109.1",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "x64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.13.7",
+      "x-stainless-async": "false",
+      "x-stainless-raw-response": "true",
+      "x-stainless-retry-count": "0",
+      "cookie": "__cf_bm=OPmlzQ1Y790q.mAQ4nswv_r2kTbbpKPlZ2sUw5F9sww-1759367052-1.0.1.1-MfkyncdEwEQOBI1V1E7QsDi_FH.u2CgLjNt2ii87CrQEdEUeXKj86eRS5f8oKXMQNVyoIXTokbQ8IYczRXSrvLPLM7NrnGG055HDzKL_Rlk; _cfuvid=9GQV221HjH5bMUdhN39FqnfPXr3y9MgXftsy_rrzTtA-1759367052483-0.0.1.1-604800000",
+      "content-length": "160"
+    },
+    "body": {
+      "messages": [
+        {
+          "content": "Create a testing strategy for the document management system",
+          "role": "user"
+        }
+      ],
+      "model": "gpt-3.5-turbo",
+      "stream": false,
+      "temperature": 0.0
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "date": "Thu, 02 Oct 2025 01:04:48 GMT",
+      "content-type": "application/json",
+      "transfer-encoding": "chunked",
+      "connection": "keep-alive",
+      "access-control-expose-headers": "X-Request-ID",
+      "openai-organization": "user-tu2zxupnayleuuciciz3bjxf",
+      "openai-processing-ms": "2852",
+      "openai-project": "proj_KdGrIQRlLLMNfXk1c5cwn0Ng",
+      "openai-version": "2020-10-01",
+      "x-envoy-upstream-service-time": "3014",
+      "x-ratelimit-limit-requests": "10000",
+      "x-ratelimit-limit-tokens": "200000",
+      "x-ratelimit-remaining-requests": "9987",
+      "x-ratelimit-remaining-tokens": "199983",
+      "x-ratelimit-reset-requests": "1m45.537s",
+      "x-ratelimit-reset-tokens": "5ms",
+      "x-request-id": "req_082aa5948fae4d5f9d39b855fa2fd7c7",
+      "x-openai-proxy-wasm": "v0.1",
+      "cf-cache-status": "DYNAMIC",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "x-content-type-options": "nosniff",
+      "server": "cloudflare",
+      "cf-ray": "98804999bc1bb40a-YYZ",
+      "content-encoding": "gzip",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "body": {
+      "id": "chatcmpl-CM22Py4N9OU6ynKAFewNCyNlwR7C3",
+      "object": "chat.completion",
+      "created": 1759367085,
+      "model": "gpt-3.5-turbo-0125",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "1. Define the scope of testing: Identify the key functionalities and features of the document management system that need to be tested, such as document upload, search, version control, access control, and integration with other systems.\n\n2. Create test cases: Develop a comprehensive set of test cases that cover all aspects of the document management system, including positive and negative scenarios. Test cases should include steps to reproduce the expected behavior, input data, and expected outcomes.\n\n3. Prioritize test cases: Prioritize test cases based on the criticality of the functionality being tested and the frequency of use. Focus on testing high-impact areas first to ensure the most important features are functioning correctly.\n\n4. Perform functional testing: Conduct functional testing to ensure that all features of the document management system are working as expected. This includes testing document upload, search functionality, version control, access control, and integration with other systems.\n\n5. Conduct performance testing: Test the performance of the document management system by simulating a large number of users accessing and uploading documents simultaneously. Measure response times, system stability, and scalability under different load conditions.\n\n6. Test security features: Verify that the document management system has robust security measures in place to protect sensitive information. Test access control mechanisms, encryption, authentication, and authorization processes to ensure data security.\n\n7. Conduct usability testing: Evaluate the user interface of the document management system to ensure it is intuitive and easy to use. Test navigation, search functionality, document organization, and user permissions to ensure a positive user experience.\n\n8. Test integration with other systems: Verify that the document management system can seamlessly integrate with other systems, such as CRM or ERP systems. Test data exchange, synchronization, and compatibility with third-party applications.\n\n9. Regression testing: Perform regression testing to ensure that new updates or changes to the document management system do not introduce any defects or impact existing functionality. Re-run test cases to validate that all features are still working as expected.\n\n10. Document test results: Keep detailed records of test results, including any defects found, their severity, and steps to reproduce. Use this information to track progress, prioritize fixes, and ensure the document management system meets quality standards.",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 16,
+        "completion_tokens": 439,
+        "total_tokens": 455,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "service_tier": "default",
+      "system_fingerprint": null
+    }
+  },
+  "metadata": {
+    "duration_ms": 3414.58,
+    "tokens": {
+      "prompt": 16,
+      "completion": 439,
+      "total": 455
+    },
+    "cost_usd": 0.0006665,
+    "model": "gpt-3.5-turbo",
+    "openai_request_id": "req_082aa5948fae4d5f9d39b855fa2fd7c7"
+  }
+}

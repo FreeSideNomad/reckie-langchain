@@ -1,0 +1,126 @@
+{
+  "correlation_id": "chat_7346991c_dc8c2edd",
+  "layer": "raw_openai_api",
+  "timestamp": 1759367133.7538931,
+  "timestamp_iso": "2025-10-02T01:05:33.fZ",
+  "api_type": "chat",
+  "request": {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.109.1",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.109.1",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "x64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.13.7",
+      "x-stainless-async": "false",
+      "x-stainless-raw-response": "true",
+      "x-stainless-retry-count": "0",
+      "cookie": "__cf_bm=OPmlzQ1Y790q.mAQ4nswv_r2kTbbpKPlZ2sUw5F9sww-1759367052-1.0.1.1-MfkyncdEwEQOBI1V1E7QsDi_FH.u2CgLjNt2ii87CrQEdEUeXKj86eRS5f8oKXMQNVyoIXTokbQ8IYczRXSrvLPLM7NrnGG055HDzKL_Rlk; _cfuvid=9GQV221HjH5bMUdhN39FqnfPXr3y9MgXftsy_rrzTtA-1759367052483-0.0.1.1-604800000",
+      "content-length": "1398"
+    },
+    "body": {
+      "messages": [
+        {
+          "content": "Create Business Context for an e-commerce platform",
+          "role": "user"
+        },
+        {
+          "content": "Our e-commerce platform is designed to provide a seamless and convenient shopping experience for customers looking to purchase a wide range of products online. With the increasing trend towards online shopping, our platform aims to cater to the needs of modern consumers who prefer the convenience of shopping from the comfort of their own homes.\n\nThrough our platform, customers can browse through a diverse selection of products, compare prices, read reviews, and make secure online payments. We partner with a variety of trusted brands and vendors to offer a wide range of products, from electronics and fashion to home goods and beauty products.\n\nOur platform also provides sellers with a user-friendly interface to set up their online stores, manage inventory, and track sales. We offer marketing and promotional tools to help sellers reach a larger audience and increase their sales.\n\nOverall, our e-commerce platform aims to create a thriving online marketplace where customers can easily find and purchase the products they need, while providing sellers with the tools and support they need to grow their online businesses.",
+          "role": "assistant"
+        },
+        {
+          "content": "actually, I want to do a Vision document instead",
+          "role": "user"
+        }
+      ],
+      "model": "gpt-3.5-turbo",
+      "stream": false,
+      "temperature": 0.0
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "date": "Thu, 02 Oct 2025 01:05:39 GMT",
+      "content-type": "application/json",
+      "transfer-encoding": "chunked",
+      "connection": "keep-alive",
+      "access-control-expose-headers": "X-Request-ID",
+      "openai-organization": "user-tu2zxupnayleuuciciz3bjxf",
+      "openai-processing-ms": "1902",
+      "openai-project": "proj_KdGrIQRlLLMNfXk1c5cwn0Ng",
+      "openai-version": "2020-10-01",
+      "x-envoy-upstream-service-time": "2058",
+      "x-ratelimit-limit-requests": "10000",
+      "x-ratelimit-limit-tokens": "200000",
+      "x-ratelimit-remaining-requests": "9976",
+      "x-ratelimit-remaining-tokens": "199688",
+      "x-ratelimit-reset-requests": "3m19.427s",
+      "x-ratelimit-reset-tokens": "93ms",
+      "x-request-id": "req_53956f23ecb04d839eabc61a103b7a5a",
+      "x-openai-proxy-wasm": "v0.1",
+      "cf-cache-status": "DYNAMIC",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "x-content-type-options": "nosniff",
+      "server": "cloudflare",
+      "cf-ray": "98804addfd97b40a-YYZ",
+      "content-encoding": "gzip",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "body": {
+      "id": "chatcmpl-CM23FCwz3p3p6XW6f2bKTitxE16zR",
+      "object": "chat.completion",
+      "created": 1759367137,
+      "model": "gpt-3.5-turbo-0125",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Vision Document for an e-commerce platform:\n\nVision Statement:\nTo become the leading e-commerce platform that provides a seamless and personalized shopping experience for customers, while empowering sellers to grow their online businesses and reach a global audience.\n\nGoals:\n1. Customer-centric Experience: Our goal is to prioritize the needs and preferences of our customers by offering a user-friendly interface, personalized recommendations, and efficient customer service to ensure a seamless shopping experience.\n\n2. Diverse Product Selection: We aim to partner with a wide range of trusted brands and vendors to offer customers a diverse selection of products across various categories, from electronics and fashion to home goods and beauty products.\n\n3. Seller Empowerment: We are committed to providing sellers with the tools and support they need to set up and manage their online stores, optimize their sales, and reach a larger audience through marketing and promotional tools.\n\n4. Innovation and Technology: We strive to stay ahead of the curve by continuously investing in technology and innovation to enhance our platform's features, security, and performance, ensuring a cutting-edge and reliable shopping experience for both customers and sellers.\n\n5. Global Reach: Our vision is to expand our platform's reach globally, connecting customers and sellers from around the world and fostering a diverse and inclusive online marketplace.\n\n6. Sustainability and Social Responsibility: We are dedicated to promoting sustainability and social responsibility by partnering with eco-friendly brands, supporting local artisans and small businesses, and giving back to the community through charitable initiatives.\n\nBy staying true to our vision and goals, we aim to create a thriving e-commerce platform that not only meets the needs of modern consumers but also empowers sellers to succeed in the digital marketplace.",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 230,
+        "completion_tokens": 330,
+        "total_tokens": 560,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "service_tier": "default",
+      "system_fingerprint": null
+    }
+  },
+  "metadata": {
+    "duration_ms": 2195.54,
+    "tokens": {
+      "prompt": 230,
+      "completion": 330,
+      "total": 560
+    },
+    "cost_usd": 0.00061,
+    "model": "gpt-3.5-turbo",
+    "openai_request_id": "req_53956f23ecb04d839eabc61a103b7a5a"
+  }
+}

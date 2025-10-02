@@ -66,12 +66,17 @@ def get_embeddings_provider() -> Embeddings:
         return MockEmbeddings()
 
     elif record_fixtures:
-        # Recording mode: Wrap real provider with recording
+        # Recording mode: Wrap real provider with recording + httpx logging
+        import httpx
         from langchain_openai import OpenAIEmbeddings
 
+        from src.testing.mock_adapters.httpx_logging_transport import get_logging_transport
         from src.testing.mock_adapters.recording_wrapper import RecordingEmbeddings
 
-        real_embeddings = OpenAIEmbeddings()
+        # Create OpenAI client with logging transport (Layer 3: raw HTTP)
+        real_embeddings = OpenAIEmbeddings(
+            http_client=httpx.Client(transport=get_logging_transport())
+        )
         return RecordingEmbeddings(real_embeddings)
 
     else:
@@ -118,12 +123,20 @@ def get_chat_provider() -> BaseChatModel:
         return MockChatModel()
 
     elif record_fixtures:
-        # Recording mode: Wrap real provider with recording
+        # Recording mode: Wrap real provider with recording + httpx logging + callback
+        import httpx
         from langchain_openai import ChatOpenAI
 
+        from src.testing.mock_adapters.httpx_logging_transport import get_logging_transport
+        from src.testing.mock_adapters.langchain_logging_callback import get_langchain_logger
         from src.testing.mock_adapters.recording_wrapper import RecordingChatModel
 
-        real_chat = ChatOpenAI(temperature=0)  # temperature=0 for deterministic
+        # Create OpenAI client with logging transport (Layer 3) + callback (Layer 1)
+        real_chat = ChatOpenAI(
+            temperature=0,  # deterministic
+            http_client=httpx.Client(transport=get_logging_transport()),
+            callbacks=[get_langchain_logger()],
+        )
         return RecordingChatModel(real_chat)
 
     else:

@@ -1,0 +1,126 @@
+{
+  "correlation_id": "chat_dd7e9f5f_a3b054cc",
+  "layer": "raw_openai_api",
+  "timestamp": 1759367105.4209971,
+  "timestamp_iso": "2025-10-02T01:05:05.fZ",
+  "api_type": "chat",
+  "request": {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.109.1",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.109.1",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "x64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.13.7",
+      "x-stainless-async": "false",
+      "x-stainless-raw-response": "true",
+      "x-stainless-retry-count": "0",
+      "cookie": "__cf_bm=OPmlzQ1Y790q.mAQ4nswv_r2kTbbpKPlZ2sUw5F9sww-1759367052-1.0.1.1-MfkyncdEwEQOBI1V1E7QsDi_FH.u2CgLjNt2ii87CrQEdEUeXKj86eRS5f8oKXMQNVyoIXTokbQ8IYczRXSrvLPLM7NrnGG055HDzKL_Rlk; _cfuvid=9GQV221HjH5bMUdhN39FqnfPXr3y9MgXftsy_rrzTtA-1759367052483-0.0.1.1-604800000",
+      "content-length": "2885"
+    },
+    "body": {
+      "messages": [
+        {
+          "content": "Create feature document for user authentication",
+          "role": "user"
+        },
+        {
+          "content": "Feature: User Authentication\n\nDescription:\nUser authentication is a crucial feature that allows users to securely access their accounts and protect their personal information. This feature ensures that only authorized users can access the system and perform actions within it.\n\nKey Features:\n1. User Registration: Users can create an account by providing their email address, username, and password. They may also be required to verify their email address to complete the registration process.\n\n2. Login: Users can securely log in to their accounts by entering their username and password. The system should authenticate the user's credentials and grant access to the account if they are correct.\n\n3. Password Reset: In case a user forgets their password, they should be able to reset it by providing their email address or answering security questions. A secure password reset process should be in place to prevent unauthorized access.\n\n4. Multi-factor Authentication: To enhance security, users can enable multi-factor authentication, which requires them to provide an additional form of verification, such as a code sent to their phone or email, in addition to their password.\n\n5. Account Lockout: To prevent brute force attacks, the system should have a mechanism in place to lock out an account after multiple failed login attempts. Users should be notified and provided with instructions on how to unlock their account.\n\n6. Session Management: The system should manage user sessions securely, including session timeouts and the ability to log out of the account from any device.\n\n7. User Roles and Permissions: Administrators can assign different roles and permissions to users, controlling their access to certain features and data within the system.\n\n8. Audit Trail: All user authentication and authorization activities should be logged and audited for security and compliance purposes.\n\n9. Password Policy: The system should enforce a strong password policy, including requirements for password complexity, length, and expiration.\n\n10. Secure Communication: All communication between the user and the system should be encrypted to protect sensitive information from unauthorized access.\n\nBenefits:\n- Enhanced security: User authentication helps prevent unauthorized access to user accounts and sensitive information.\n- User control: Users can securely manage their accounts and access the system with confidence.\n- Compliance: User authentication helps organizations comply with security and privacy regulations by ensuring only authorized users can access the system.",
+          "role": "assistant"
+        },
+        {
+          "content": "OAuth2 with support for multiple providers: Google, Microsoft, GitHub",
+          "role": "user"
+        }
+      ],
+      "model": "gpt-3.5-turbo",
+      "stream": false,
+      "temperature": 0.0
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "date": "Thu, 02 Oct 2025 01:05:10 GMT",
+      "content-type": "application/json",
+      "transfer-encoding": "chunked",
+      "connection": "keep-alive",
+      "access-control-expose-headers": "X-Request-ID",
+      "openai-organization": "user-tu2zxupnayleuuciciz3bjxf",
+      "openai-processing-ms": "3014",
+      "openai-project": "proj_KdGrIQRlLLMNfXk1c5cwn0Ng",
+      "openai-version": "2020-10-01",
+      "x-envoy-upstream-service-time": "3043",
+      "x-ratelimit-limit-requests": "10000",
+      "x-ratelimit-limit-tokens": "200000",
+      "x-ratelimit-remaining-requests": "9982",
+      "x-ratelimit-remaining-tokens": "199322",
+      "x-ratelimit-reset-requests": "2m31.307s",
+      "x-ratelimit-reset-tokens": "203ms",
+      "x-request-id": "req_2e47ad67341e4879a4d3e57a3544a8a5",
+      "x-openai-proxy-wasm": "v0.1",
+      "cf-cache-status": "DYNAMIC",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "x-content-type-options": "nosniff",
+      "server": "cloudflare",
+      "cf-ray": "98804a257fd7b40a-YYZ",
+      "content-encoding": "gzip",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "body": {
+      "id": "chatcmpl-CM22ltOBEcnV7HX4wyyopQcqSvMU0",
+      "object": "chat.completion",
+      "created": 1759367107,
+      "model": "gpt-3.5-turbo-0125",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Feature: OAuth2 Authentication with Support for Multiple Providers\n\nDescription:\nOAuth2 authentication with support for multiple providers allows users to securely log in to their accounts using their existing credentials from popular third-party providers such as Google, Microsoft, and GitHub. This feature simplifies the login process for users and enhances security by leveraging the authentication mechanisms of trusted providers.\n\nKey Features:\n1. OAuth2 Integration: The system integrates with OAuth2 authentication protocol to allow users to log in using their existing accounts from Google, Microsoft, GitHub, and other supported providers.\n\n2. Provider Selection: Users can choose their preferred authentication provider from a list of supported options during the login process.\n\n3. Single Sign-On (SSO): Users who have already authenticated with a provider can seamlessly access the system without having to enter their credentials again, promoting a smooth user experience.\n\n4. User Consent: Users are prompted to grant permission for the system to access their profile information from the selected provider, ensuring transparency and user control over their data.\n\n5. Account Linking: Users can link multiple authentication providers to their account, enabling them to log in using any of the linked accounts.\n\n6. Customizable Login Page: The system provides a customizable login page where users can select their preferred authentication provider and log in securely.\n\n7. Security Measures: The system implements best practices for OAuth2 authentication, including token validation, secure communication, and protection against common security threats such as CSRF and token leakage.\n\n8. User Provisioning: Upon successful authentication, the system creates a user account and provisions necessary user data based on the information received from the authentication provider.\n\n9. Error Handling: The system handles authentication errors gracefully, providing clear error messages and guidance to users in case of authentication failures.\n\n10. Logging and Monitoring: Authentication events, including successful logins and failed attempts, are logged and monitored to track user activity and detect suspicious behavior.\n\nBenefits:\n- Simplified Login Process: Users can log in to their accounts quickly and easily using their existing credentials from trusted providers.\n- Enhanced Security: Leveraging OAuth2 authentication from reputable providers enhances security and reduces the risk of unauthorized access.\n- Improved User Experience: Single sign-on capabilities and seamless account linking provide a convenient and user-friendly login experience.\n- Scalability: Support for multiple authentication providers allows the system to scale and accommodate a diverse user base with varying preferences.\n- Compliance: By leveraging OAuth2 authentication, the system can adhere to industry standards and regulations for secure authentication and data protection.",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 482,
+        "completion_tokens": 496,
+        "total_tokens": 978,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "service_tier": "default",
+      "system_fingerprint": null
+    }
+  },
+  "metadata": {
+    "duration_ms": 3379.73,
+    "tokens": {
+      "prompt": 482,
+      "completion": 496,
+      "total": 978
+    },
+    "cost_usd": 0.000985,
+    "model": "gpt-3.5-turbo",
+    "openai_request_id": "req_2e47ad67341e4879a4d3e57a3544a8a5"
+  }
+}
