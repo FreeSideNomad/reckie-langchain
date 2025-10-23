@@ -1,4 +1,4 @@
-"""Unit tests for ConversationChainService."""
+"""Unit tests for ConversationChainService with RunnableWithMessageHistory."""
 
 import os
 import uuid
@@ -32,15 +32,14 @@ class TestConversationChainService:
         assert service.temperature == 0.5
         assert service.max_context_messages == 5
 
-    @patch("src.services.conversation_chain_service.ConversationChain")
-    @patch("src.services.conversation_chain_service.PostgresChatMessageHistory")
+    @patch("src.services.conversation_chain_service.RunnableWithMessageHistory")
+    @patch("src.services.conversation_chain_service.ConversationsChatMessageHistory")
     @patch.dict(
         os.environ,
         {"DATABASE_URL": "postgresql://test:test@localhost/test", "OPENAI_API_KEY": "test-key"},
     )
-    def test_create_chain_with_default_connection(self, mock_history, mock_chain):
+    def test_create_chain_with_default_connection(self, mock_history, mock_runnable):
         """Test create_chain uses DATABASE_URL from environment."""
-        # Mock PostgresChatMessageHistory properly
         from langchain.schema import BaseChatMessageHistory
 
         mock_history_instance = MagicMock(spec=BaseChatMessageHistory)
@@ -48,22 +47,18 @@ class TestConversationChainService:
 
         service = ConversationChainService()
         conversation_id = uuid.uuid4()
+        user_id = uuid.uuid4()
+        document_id = uuid.uuid4()
 
-        service.create_chain(conversation_id)
+        service.create_chain(conversation_id, user_id, document_id)
 
-        # Verify PostgresChatMessageHistory was called with env DATABASE_URL
-        mock_history.assert_called_once_with(
-            connection_string="postgresql://test:test@localhost/test",
-            session_id=str(conversation_id),
-        )
+        # Verify RunnableWithMessageHistory was called
+        assert mock_runnable.called
 
-        # Verify ConversationChain was called
-        assert mock_chain.called
-
-    @patch("src.services.conversation_chain_service.ConversationChain")
-    @patch("src.services.conversation_chain_service.PostgresChatMessageHistory")
+    @patch("src.services.conversation_chain_service.RunnableWithMessageHistory")
+    @patch("src.services.conversation_chain_service.ConversationsChatMessageHistory")
     @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})
-    def test_create_chain_with_custom_connection(self, mock_history, mock_chain):
+    def test_create_chain_with_custom_connection(self, mock_history, mock_runnable):
         """Test create_chain with custom connection string."""
         from langchain.schema import BaseChatMessageHistory
 
@@ -72,23 +67,23 @@ class TestConversationChainService:
 
         service = ConversationChainService()
         conversation_id = uuid.uuid4()
+        user_id = uuid.uuid4()
+        document_id = uuid.uuid4()
         custom_conn = "postgresql://custom:custom@localhost/custom"
 
-        service.create_chain(conversation_id, custom_conn)
+        service.create_chain(conversation_id, user_id, document_id, custom_conn)
 
-        # Verify PostgresChatMessageHistory was called with custom connection
-        mock_history.assert_called_once_with(
-            connection_string=custom_conn, session_id=str(conversation_id)
-        )
+        # Verify custom connection was stored
+        assert service._connection_string == custom_conn
 
-        # Verify ConversationChain was called
-        assert mock_chain.called
+        # Verify RunnableWithMessageHistory was called
+        assert mock_runnable.called
 
-    @patch("src.services.conversation_chain_service.ConversationChain")
-    @patch("src.services.conversation_chain_service.PostgresChatMessageHistory")
+    @patch("src.services.conversation_chain_service.RunnableWithMessageHistory")
+    @patch("src.services.conversation_chain_service.ConversationsChatMessageHistory")
     @patch("src.services.conversation_chain_service.ChatOpenAI")
     @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})
-    def test_create_chain_configures_llm(self, mock_chat_openai, mock_history, mock_chain):
+    def test_create_chain_configures_llm(self, mock_chat_openai, mock_history, mock_runnable):
         """Test create_chain configures LLM with correct parameters."""
         from langchain.schema import BaseChatMessageHistory
 
@@ -97,8 +92,10 @@ class TestConversationChainService:
 
         service = ConversationChainService(model="gpt-3.5-turbo", temperature=0.5)
         conversation_id = uuid.uuid4()
+        user_id = uuid.uuid4()
+        document_id = uuid.uuid4()
 
-        service.create_chain(conversation_id)
+        service.create_chain(conversation_id, user_id, document_id)
 
         # Verify ChatOpenAI was called with correct parameters
         mock_chat_openai.assert_called_once_with(
@@ -106,37 +103,39 @@ class TestConversationChainService:
         )
 
     @pytest.mark.asyncio
-    @patch("src.services.conversation_chain_service.ConversationChain")
-    @patch("src.services.conversation_chain_service.PostgresChatMessageHistory")
+    @patch("src.services.conversation_chain_service.RunnableWithMessageHistory")
+    @patch("src.services.conversation_chain_service.ConversationsChatMessageHistory")
     @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})
-    async def test_stream_response(self, mock_history, mock_conversation_chain):
+    async def test_stream_response(self, mock_history, mock_runnable):
         """Test stream_response yields tokens from chain."""
-        from langchain.schema import BaseChatMessageHistory
+        from langchain.schema import AIMessage, BaseChatMessageHistory
 
         mock_history_instance = MagicMock(spec=BaseChatMessageHistory)
         mock_history.return_value = mock_history_instance
 
-        # Mock the chain's astream method
-        async def mock_astream(inputs):
-            for chunk in [{"response": "Hello"}, {"response": " world"}, {"response": "!"}]:
-                yield chunk
+        # Mock the runnable's astream method - returns AIMessage chunks
+        async def mock_astream(inputs, config):
+            for chunk in ["Hello", " world", "!"]:
+                yield AIMessage(content=chunk)
 
-        mock_chain_instance = MagicMock()
-        mock_chain_instance.astream = mock_astream
-        mock_conversation_chain.return_value = mock_chain_instance
+        mock_runnable_instance = MagicMock()
+        mock_runnable_instance.astream = mock_astream
+        mock_runnable.return_value = mock_runnable_instance
 
         service = ConversationChainService()
         conversation_id = uuid.uuid4()
+        user_id = uuid.uuid4()
+        document_id = uuid.uuid4()
 
         # Collect streamed tokens
         tokens = []
-        async for token in service.stream_response(conversation_id, "Hi there"):
+        async for token in service.stream_response(conversation_id, user_id, document_id, "Hi there"):
             tokens.append(token)
 
         # Verify tokens were yielded
         assert tokens == ["Hello", " world", "!"]
 
-    @patch("src.services.conversation_chain_service.PostgresChatMessageHistory")
+    @patch("src.services.conversation_chain_service.ConversationsChatMessageHistory")
     @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})
     def test_get_conversation_history(self, mock_history):
         """Test get_conversation_history returns formatted messages."""
@@ -154,8 +153,10 @@ class TestConversationChainService:
 
         service = ConversationChainService()
         conversation_id = uuid.uuid4()
+        user_id = uuid.uuid4()
+        document_id = uuid.uuid4()
 
-        history = service.get_conversation_history(conversation_id)
+        history = service.get_conversation_history(conversation_id, user_id, document_id)
 
         # Verify history format
         assert len(history) == 4
@@ -164,7 +165,7 @@ class TestConversationChainService:
         assert history[2] == {"role": "user", "content": "How are you?"}
         assert history[3] == {"role": "assistant", "content": "I'm doing well, thank you!"}
 
-    @patch("src.services.conversation_chain_service.PostgresChatMessageHistory")
+    @patch("src.services.conversation_chain_service.ConversationsChatMessageHistory")
     @patch.dict(
         os.environ,
         {"DATABASE_URL": "postgresql://test:test@localhost/test", "OPENAI_API_KEY": "test-key"},
@@ -177,11 +178,15 @@ class TestConversationChainService:
 
         service = ConversationChainService()
         conversation_id = uuid.uuid4()
+        user_id = uuid.uuid4()
+        document_id = uuid.uuid4()
 
-        service.get_conversation_history(conversation_id)
+        service.get_conversation_history(conversation_id, user_id, document_id)
 
-        # Verify called with env DATABASE_URL
+        # Verify ConversationsChatMessageHistory was called with correct parameters
         mock_history.assert_called_once_with(
+            conversation_id=conversation_id,
+            user_id=user_id,
+            document_id=document_id,
             connection_string="postgresql://test:test@localhost/test",
-            session_id=str(conversation_id),
         )

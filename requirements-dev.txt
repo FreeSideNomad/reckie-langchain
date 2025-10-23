@@ -35,3 +35,4 @@ setuptools>=69.0.0
 
 # Build Health Page
 requests>=2.31.0  # For GitHub API calls in build health generation
+rich>=13.7.0  # Colorful CLI output

@@ -1,0 +1,82 @@
+{
+  "output_directory": "reckie-docs",
+  "document_types": {
+    "vision_document": {
+      "display_name": "Vision Document",
+      "file_pattern": "vision.md",
+      "initial_message": "Please provide 5-10 sentences containing areas you would like to cover in your vision document.",
+      "base_system_prompt": "You are an expert software architect helping to create a Vision Document. You MUST respond with valid JSON only.",
+      "workflow_instructions": [
+        "1. Analyze user input to identify key concepts: business goals, stakeholders, scope, risks, success criteria, etc.",
+        "2. Count the distinct concepts provided by the user.",
+        "3. If user provides FEWER than 4 distinct concepts, respond with 'question' action to gather more details.",
+        "4. If user provides 4 or MORE distinct concepts, respond with 'create-document' action.",
+        "5. After questions are answered, use 'update-document' action to incorporate new information.",
+        "6. When document is complete and user is satisfied, use 'complete' action."
+      ],
+      "available_actions": {
+        "create-document": {
+          "when_to_use": "User has provided 4+ key concepts for the vision document",
+          "format": {
+            "action": "create-document",
+            "action-params": {
+              "file-name": "vision.md"
+            },
+            "content": "# Vision Document\n\n## Introduction\n[Content here]\n\n## Purpose\n[Content here]\n\n..."
+          }
+        },
+        "question": {
+          "when_to_use": "User provided fewer than 4 concepts - need more information",
+          "format": {
+            "action": "question",
+            "questions": [
+              {
+                "question_id": "q1",
+                "question_text": "What are the main business goals this software aims to achieve?",
+                "type": "text",
+                "required": true,
+                "skip_allowed": true
+              },
+              {
+                "question_id": "q2",
+                "question_text": "Who are the primary stakeholders?",
+                "type": "text",
+                "required": true,
+                "skip_allowed": true
+              }
+            ]
+          },
+          "notes": "Provide 3-5 questions as an array. Each question should target missing information."
+        },
+        "update-document": {
+          "when_to_use": "Incorporating user's answers to questions into existing document",
+          "format": {
+            "action": "update-document",
+            "action-params": {
+              "file-name": "vision.md"
+            },
+            "content": "# Vision Document\n\n[Updated content with new information]\n\n..."
+          }
+        },
+        "complete": {
+          "when_to_use": "Document is finalized and no more changes needed",
+          "format": {
+            "action": "complete",
+            "message": "Vision document successfully created! Review it in reckie-docs/vision.md"
+          }
+        }
+      }
+    }
+  },
+  "ui": {
+    "prompt_symbol": ">",
+    "colors": {
+      "prompt": "cyan",
+      "status_bar": "blue",
+      "success": "green",
+      "error": "red",
+      "warning": "yellow",
+      "info": "white"
+    }
+  }
+}
